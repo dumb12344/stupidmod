@@ -1,0 +1,8 @@
+{
+  "sounds_damage": {
+    "subtitles": "sounds.stupidmod.sounds_damage",
+    "sounds": [
+      "stupidmod:sounds_damage"
+    ]
+  }
+}

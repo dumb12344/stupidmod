@@ -1,0 +1,21 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "me.dumb12344.stupidmod.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "stupidmod.refmap.json",
+  "mixins": [
+    "BedrockEatMixin",
+    "BedrockMixin",
+    "GrindstoneMixin",
+    "NetherSleepMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  },
+  "overwrites": {
+    "requireAnnotations": true
+  }
+}
