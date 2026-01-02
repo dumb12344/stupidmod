@@ -8,6 +8,8 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.entity.projectile.ThrownExperienceBottle;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.Enchantment;
@@ -17,12 +19,16 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.event.GrindstoneEvent;
+import net.minecraftforge.event.entity.ProjectileImpactEvent;
 import net.minecraftforge.event.entity.living.*;
 import net.minecraftforge.event.entity.player.*;
 import net.minecraftforge.event.level.BlockEvent;
 import net.minecraftforge.eventbus.api.Event;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
+
+import java.util.Arrays;
+import java.util.List;
 
 @Mod.EventBusSubscriber(modid = Stupidmod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventBus {
@@ -130,33 +136,51 @@ public class EventBus {
             //event.getEntity().level().playSound(((Player)event.getEntity()),event.getEntity().blockPosition(),Stupidmod.FUNISOUND.get(),SoundSource.MASTER);
         }
     }*/
-
     @SubscribeEvent
-    public static void grindstoneop(GrindstoneEvent.OnPlaceItem event){
+    public static void explodingXpBottles(ProjectileImpactEvent event){
+        Projectile entity = event.getProjectile();
+        if(entity instanceof ThrownExperienceBottle){
+            entity.level().explode(entity,entity.getX(),entity.getY(),entity.getZ(),8F, Level.ExplosionInteraction.TNT);
+        }
+    }
+    @SubscribeEvent
+    public static void grindstoneOP(GrindstoneEvent.OnPlaceItem event){
         if(!event.getBottomItem().isEmpty()){return;}
-        Enchantment[] enchantments = {
-                Enchantments.SHARPNESS,
+        Enchantment[] armorEnchantmentsArray = {
                 Enchantments.ALL_DAMAGE_PROTECTION,
                 Enchantments.AQUA_AFFINITY,
                 Enchantments.BLAST_PROTECTION,
-                Enchantments.BLOCK_EFFICIENCY,
-                Enchantments.BLOCK_FORTUNE,
                 Enchantments.DEPTH_STRIDER,
                 Enchantments.FALL_PROTECTION,
-                Enchantments.FIRE_ASPECT,
-                Enchantments.FIRE_PROTECTION,
-                Enchantments.FROST_WALKER,
-                Enchantments.KNOCKBACK,
-                Enchantments.MENDING,
-                Enchantments.MOB_LOOTING,
-                Enchantments.MULTISHOT,
-                Enchantments.POWER_ARROWS,
                 Enchantments.PROJECTILE_PROTECTION,
                 Enchantments.RESPIRATION,
+                Enchantments.FIRE_PROTECTION,
+                Enchantments.FROST_WALKER,
                 Enchantments.THORNS,
-                Enchantments.SWEEPING_EDGE,
                 Enchantments.SWIFT_SNEAK
         };
+        Enchantment[] commonEnchantmentsArray = {
+                Enchantments.UNBREAKING,
+                Enchantments.MENDING,
+        };
+        Enchantment[] swordEnchantmentsArray = {
+                Enchantments.SHARPNESS,
+                Enchantments.FIRE_ASPECT,
+                Enchantments.KNOCKBACK,
+                Enchantments.MOB_LOOTING,
+                Enchantments.SWEEPING_EDGE,
+        };
+        Enchantment[] pickaxeEnchantmentsArray = {
+                Enchantments.BLOCK_FORTUNE,
+                Enchantments.BLOCK_EFFICIENCY,
+        };
+        List<Enchantment> commonEnchantments = new java.util.ArrayList<>(Arrays.stream(commonEnchantmentsArray).toList());
+        List<Enchantment> armorEnchantments = new java.util.ArrayList<>(Arrays.stream(armorEnchantmentsArray).toList());
+        List<Enchantment> swordEnchantments = new java.util.ArrayList<>(Arrays.stream(swordEnchantmentsArray).toList());
+        List<Enchantment> pickaxeEnchantments = new java.util.ArrayList<>(Arrays.stream(pickaxeEnchantmentsArray).toList());
+        armorEnchantments.addAll(commonEnchantments);
+        swordEnchantments.addAll(commonEnchantments);
+        pickaxeEnchantments.addAll(commonEnchantments);
         if(event.getTopItem().is(Blocks.BEDROCK.asItem())){
             ItemStack item = Items.BARRIER.getDefaultInstance();
             item.setCount(event.getTopItem().getCount());
@@ -166,14 +190,14 @@ public class EventBus {
             CompoundTag test = new CompoundTag();
             ItemStack item = BedrockItemRegistry.BEDROCK_SWORD.get().getDefaultInstance();
             item.setTag(test);
-            for(Enchantment e : enchantments)item.enchant(e, 127);
+            for(Enchantment e : swordEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }
         if(event.getTopItem().is(Items.WOODEN_PICKAXE)){
             CompoundTag test = new CompoundTag();
             ItemStack item = BedrockItemRegistry.BEDROCK_PICKAXE.get().getDefaultInstance();
             item.setTag(test);
-            for(Enchantment e : enchantments)item.enchant(e, 127);
+            for(Enchantment e : pickaxeEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }
         if(event.getTopItem().is(Items.ENDER_PEARL)){
@@ -204,27 +228,27 @@ public class EventBus {
             test.putBoolean("Unbreakable", true);
             ItemStack item = Items.NETHERITE_HELMET.getDefaultInstance();
             item.setTag(test);
-            for(Enchantment e : enchantments)item.enchant(e, 127);
+            for(Enchantment e : armorEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }if(event.getTopItem().is(Items.LEATHER_CHESTPLATE)){
             CompoundTag test = new CompoundTag();
             test.putBoolean("Unbreakable", true);
             ItemStack item = Items.NETHERITE_CHESTPLATE.getDefaultInstance();
             item.setTag(test);
-            for(Enchantment e : enchantments)item.enchant(e, 127);
+            for(Enchantment e : armorEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }if(event.getTopItem().is(Items.LEATHER_LEGGINGS)){
             CompoundTag test = new CompoundTag();
             test.putBoolean("Unbreakable", true);
             ItemStack item = Items.NETHERITE_LEGGINGS.getDefaultInstance();
             item.setTag(test);
-            for(Enchantment e : enchantments)item.enchant(e, 127);
+            for(Enchantment e : armorEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }if(event.getTopItem().is(Items.LEATHER_BOOTS)){
             CompoundTag test = new CompoundTag();
             ItemStack item = BedrockItemRegistry.BEDROCK_BOOTS.get().getDefaultInstance();
             item.setTag(test);
-            for(Enchantment e : enchantments)item.enchant(e, 127);
+            for(Enchantment e : armorEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }
     }

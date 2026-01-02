@@ -12,9 +12,8 @@ import net.minecraft.world.level.Level;
 
 public class BedrockPickaxeItem extends PickaxeItem {
     public BedrockPickaxeItem(Properties properties) {
-        super(BedrockTier.BEDROCK, 1000000-1-64, 1000000-4, properties);
+        super(BedrockTier.BEDROCK, 1000000-1, 1000000-4, properties);
     }
-
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemstack = player.getItemInHand(interactionHand);
