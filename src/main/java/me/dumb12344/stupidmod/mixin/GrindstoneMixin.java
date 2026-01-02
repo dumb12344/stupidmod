@@ -3,6 +3,7 @@ package me.dumb12344.stupidmod.mixin;
 import net.minecraft.world.Container;
 import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.Slot;
+import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
@@ -12,6 +13,9 @@ import org.spongepowered.asm.mixin.Mutable;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
+
+import java.util.HashSet;
+import java.util.Set;
 
 @Mixin(GrindstoneMenu.class)
 public abstract class GrindstoneMixin {
@@ -32,7 +36,18 @@ public abstract class GrindstoneMixin {
     public Slot e(Slot par1){
         return new Slot(this.repairSlots, 0, 49, 19) {
             public boolean mayPlace(ItemStack p_39607_) {
-                return p_39607_.isDamageableItem() || p_39607_.is(Items.ENCHANTED_BOOK) || p_39607_.isEnchanted() || p_39607_.canGrindstoneRepair() || p_39607_.is(Items.ENDER_PEARL) || p_39607_.is(Blocks.BEDROCK.asItem());
+                boolean isStuff=false;
+                Set<Item> stuff = new HashSet<>();
+                stuff.add(Items.ENDER_PEARL);
+                stuff.add(Blocks.BEDROCK.asItem());
+                stuff.add(Items.REDSTONE);
+                stuff.add(Blocks.NETHERITE_BLOCK.asItem());
+                for (Item e : stuff) {
+                    if (p_39607_.getItem().equals(e)) {
+                        isStuff = true;
+                    }
+                }
+                return p_39607_.isDamageableItem() || p_39607_.is(Items.ENCHANTED_BOOK) || p_39607_.isEnchanted() || p_39607_.canGrindstoneRepair() || isStuff;
             }
         };
     }

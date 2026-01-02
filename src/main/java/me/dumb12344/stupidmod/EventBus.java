@@ -205,6 +205,14 @@ public class EventBus {
             item.setCount(event.getTopItem().getCount());
             event.setOutput(item);
         }
+        if(event.getTopItem().is(Items.REDSTONE)){
+            ItemStack item = BedrockItemRegistry.BEDROCK_ACCELERATOR.get().getDefaultInstance();
+            event.setOutput(item);
+        }
+        if(event.getTopItem().is(Blocks.NETHERITE_BLOCK.asItem())){
+            ItemStack item = BedrockItemRegistry.BEDROCK_COMMAND_LINE.get().getDefaultInstance();
+            event.setOutput(item);
+        }
         /*
         if(event.getTopItem().is(Items.WOODEN_AXE)){
             CompoundTag test = new CompoundTag();

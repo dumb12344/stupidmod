@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "stupidmod:item/bedrock_command_line"
+  }
+}
