@@ -1,9 +1,12 @@
 package me.dumb12344.stupidmod.bedrockitems;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.context.UseOnContext;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.EntityBlock;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityTicker;
@@ -22,11 +25,17 @@ public class BedrockAcceleratorItem extends Item {
             blockEntityTicker.tick(blockEntity.getLevel(), blockEntity.getBlockPos(), blockEntity.getBlockState(),blockEntity);
         }
     }
+    public void randomTick(Level level,BlockPos pos){
+        level.getBlockState(pos).randomTick((ServerLevel)level,pos,level.getRandom());
+    }
     public InteractionResult useOn(UseOnContext context) {
         if(context.getLevel().isClientSide())return InteractionResult.SUCCESS;
         if (context.getLevel().getBlockState(context.getClickedPos()).getBlock() instanceof EntityBlock) {
             //context.getPlayer().sendSystemMessage(Component.literal("jaiosdj"));
             tickBlockEntity(context.getLevel().getBlockEntity(context.getClickedPos()));
+        }
+        if(context.getLevel().getBlockState(context.getClickedPos()).isRandomlyTicking()){
+            randomTick(context.getLevel(),context.getClickedPos());
         }
         return InteractionResult.SUCCESS;
     }
