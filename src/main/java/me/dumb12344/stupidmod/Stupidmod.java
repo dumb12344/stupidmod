@@ -110,7 +110,7 @@ public class Stupidmod {
                 level.addFreshEntity(primedNuke);
                 level.playSound((Player)null, primedNuke.getX(), primedNuke.getY(), primedNuke.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.gameEvent((Entity)null, GameEvent.ENTITY_PLACE, blockpos);
-                p_123426_.shrink(1);
+                //p_123426_.shrink(1);
                 return p_123426_;
             }
         });
