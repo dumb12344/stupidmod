@@ -36,6 +36,7 @@ public class EventBus {
     public static void advancementkill(AdvancementEvent.AdvancementEarnEvent event){
         Entity entity = event.getEntity();
         if(event.getEntity().getRandom().nextIntBetweenInclusive(1,50)==1){
+            entity.level().getServer().getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).setFrom(GameRules.BooleanValue.create(true).createRule(),entity.level().getServer());
             for(int i=0;i<60;i++){
                 LightningBolt lightning = new LightningBolt(EntityType.LIGHTNING_BOLT,entity.level());
                 lightning.moveTo(entity.position());
@@ -50,7 +51,6 @@ public class EventBus {
                     true,
                     Level.ExplosionInteraction.BLOCK
             );
-            entity.level().getServer().getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).setFrom(GameRules.BooleanValue.create(true).createRule(),entity.level().getServer());
         }
     }
     @SubscribeEvent
@@ -234,7 +234,7 @@ public class EventBus {
         if(event.getTopItem().is(Items.LEATHER_HELMET)){
             CompoundTag test = new CompoundTag();
             test.putBoolean("Unbreakable", true);
-            ItemStack item = Items.NETHERITE_HELMET.getDefaultInstance();
+            ItemStack item = BedrockItemRegistry.BEDROCK_HELMET.get().getDefaultInstance();
             item.setTag(test);
             for(Enchantment e : armorEnchantments)item.enchant(e, 127);
             event.setOutput(item);

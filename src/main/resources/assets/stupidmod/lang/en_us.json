@@ -5,9 +5,11 @@
   "item.stupidmod.bedrock_sword": "Bedrock Sword",
   "item.stupidmod.bedrock_ender_pearl": "Bedrock Ender Pearl",
   "item.stupidmod.bedrock_boots": "Bedrock Boots",
+  "item.stupidmod.bedrock_helmet": "Bedrock Helmet",
   "item.stupidmod.bedrock_accelerator": "Bedrock Accelerator",
   "item.stupidmod.bedrock_command_line": "Bedrock Command Line",
   "block.stupidmod.nuke": "Nuke",
   "item.stupidmod.bedrock_magnet": "Bedrock Magnet",
-  "generator.minecraft.floating_islands": "Floating Islands"
+  "generator.minecraft.floating_islands": "Floating Islands",
+  "enchantment.level.127": "CXXVII"
 }
