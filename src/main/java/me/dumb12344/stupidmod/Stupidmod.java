@@ -5,13 +5,26 @@ import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
 import me.dumb12344.stupidmod.bedrockitems.registry.BedrockEntityTypeRegistry;
 import me.dumb12344.stupidmod.nuke.NukeRegistry;
 import me.dumb12344.stupidmod.nuke.NukeRenderer;
+import me.dumb12344.stupidmod.nuke.PrimedNuke;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
+import net.minecraft.core.BlockPos;
+import net.minecraft.core.BlockSource;
+import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.DispenserBlock;
+import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
@@ -89,6 +102,18 @@ public class Stupidmod {
     }
 
     private void commonSetup(final FMLCommonSetupEvent event) {
+        DispenserBlock.registerBehavior(NukeRegistry.NUKE.get(), new DefaultDispenseItemBehavior() {
+            protected ItemStack execute(BlockSource p_123425_, ItemStack p_123426_) {
+                Level level = p_123425_.getLevel();
+                BlockPos blockpos = p_123425_.getPos().relative(p_123425_.getBlockState().getValue(DispenserBlock.FACING));
+                PrimedNuke primedNuke = new PrimedNuke(level, (double)blockpos.getX() + 0.5D, (double)blockpos.getY(), (double)blockpos.getZ() + 0.5D, (LivingEntity)null);
+                level.addFreshEntity(primedNuke);
+                level.playSound((Player)null, primedNuke.getX(), primedNuke.getY(), primedNuke.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.gameEvent((Entity)null, GameEvent.ENTITY_PLACE, blockpos);
+                p_123426_.shrink(1);
+                return p_123426_;
+            }
+        });
         // Some common setup code
         //LOGGER.info("HELLO FROM COMMON SETUP");
         //LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));

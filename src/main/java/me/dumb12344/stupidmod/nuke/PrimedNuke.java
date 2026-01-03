@@ -31,7 +31,7 @@ public class PrimedNuke extends Entity implements TraceableEntity {
         this.setPos(p_32080_, p_32081_, p_32082_);
         double d0 = p_32079_.random.nextDouble() * (double)((float)Math.PI * 2F);
         this.setDeltaMovement(-Math.sin(d0) * 0.02D, (double)0.2F, -Math.cos(d0) * 0.02D);
-        this.setFuse(80);
+        this.setFuse(160);
         this.xo = p_32080_;
         this.yo = p_32081_;
         this.zo = p_32082_;
