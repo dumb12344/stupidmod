@@ -5,6 +5,7 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
@@ -28,10 +29,24 @@ public class BedrockMagnet extends Item {
     @Override
     public void inventoryTick(ItemStack stack, Level level, Entity entity, int p_41407_, boolean p_41408_) {
         super.inventoryTick(stack, level, entity, p_41407_, p_41408_);
+        Item[] items = {
+                Items.ANCIENT_DEBRIS,
+                Items.DIAMOND,
+                Items.RAW_GOLD,
+                Items.RAW_IRON,
+                Items.RAW_COPPER,
+                Items.COAL,
+                Items.REDSTONE,
+                Items.LAPIS_LAZULI
+        };
         if(entity instanceof Player player) {
-            if(player.getMainHandItem().is(stack.getItem())) {
-                level.getEntitiesOfClass(ItemEntity.class, AABB.ofSize(entity.position(), 20, 20, 20)).forEach((Entity e) -> {
-                    gravitateEntityTowards(e, player.position(), 0.5F);
+            if(player.getMainHandItem().is(stack.getItem())||player.getOffhandItem().is(stack.getItem())) {
+                level.getEntitiesOfClass(ItemEntity.class, AABB.ofSize(entity.position(), 20, 20, 20)).forEach((ItemEntity e) -> {
+                    for(Item item : items){
+                        if(e.getItem().is(item)){
+                            gravitateEntityTowards(e, player.position(), 0.5F);
+                        }
+                    }
                 });
             }
         }

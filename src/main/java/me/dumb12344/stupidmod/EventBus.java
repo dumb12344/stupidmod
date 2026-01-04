@@ -213,6 +213,10 @@ public class EventBus {
             ItemStack item = BedrockItemRegistry.BEDROCK_COMMAND_LINE.get().getDefaultInstance();
             event.setOutput(item);
         }
+        if(event.getTopItem().is(Blocks.NETHERRACK.asItem())){
+            ItemStack item = BedrockItemRegistry.BEDROCK_MAGNET.get().getDefaultInstance();
+            event.setOutput(item);
+        }
         /*
         if(event.getTopItem().is(Items.WOODEN_AXE)){
             CompoundTag test = new CompoundTag();

@@ -47,7 +47,13 @@ public class BedrockPickaxeProjectile extends ThrowableItemProjectile {
         if(e<=0){this.discard();}
         if(this.level().getBlockState(blockHitResult.getBlockPos()).getBlock().defaultDestroyTime()==-1)
             this.discard();
-        this.level().destroyBlock(blockHitResult.getBlockPos(),true);
+        for (int i = -2; i <= 2; i++) {
+            for (int j = -2; j <= 2; j++) {
+                for (int k = -2; k <= 2; k++) {
+                    this.level().destroyBlock(blockHitResult.getBlockPos().above(i).north(j).west(k),true);
+                }
+            }
+        }
         e--;
     }
 }

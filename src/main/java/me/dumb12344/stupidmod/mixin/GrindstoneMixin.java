@@ -42,6 +42,7 @@ public abstract class GrindstoneMixin {
                 stuff.add(Blocks.BEDROCK.asItem());
                 stuff.add(Items.REDSTONE);
                 stuff.add(Blocks.NETHERITE_BLOCK.asItem());
+                stuff.add(Blocks.NETHERRACK.asItem());
                 for (Item e : stuff) {
                     if (p_39607_.getItem().equals(e)) {
                         isStuff = true;
