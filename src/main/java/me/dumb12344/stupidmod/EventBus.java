@@ -1,6 +1,7 @@
 package me.dumb12344.stupidmod;
 
 import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
+import me.dumb12344.stupidmod.nuke.NukeRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -29,22 +30,24 @@ import net.minecraftforge.fml.common.Mod;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Mod.EventBusSubscriber(modid = Stupidmod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventBus {
     @SubscribeEvent
     public static void advancementkill(AdvancementEvent.AdvancementEarnEvent event){
         Entity entity = event.getEntity();
+        Level level = entity.level();
         if(event.getEntity().getRandom().nextIntBetweenInclusive(1,50)==1){
-            entity.level().getServer().getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).setFrom(GameRules.BooleanValue.create(true).createRule(),entity.level().getServer());
+            Objects.requireNonNull(level.getServer()).getGameRules().getRule(GameRules.RULE_KEEPINVENTORY).setFrom(GameRules.BooleanValue.create(true).createRule(),level.getServer());
             for(int i=0;i<60;i++){
-                LightningBolt lightning = new LightningBolt(EntityType.LIGHTNING_BOLT,entity.level());
+                LightningBolt lightning = new LightningBolt(EntityType.LIGHTNING_BOLT,level);
                 lightning.moveTo(entity.position());
-                entity.level().addFreshEntity(lightning);
+                level.addFreshEntity(lightning);
             }
-            entity.level().explode(
+            level.explode(
                     null,
-                    entity.level().damageSources().drown(),
+                    level.damageSources().drown(),
                     null,
                     entity.position(),
                     100.0F,
@@ -78,11 +81,12 @@ public class EventBus {
     @SubscribeEvent
     public static void sleep(PlayerSleepInBedEvent event) {
         Entity entity = event.getEntity();
-        //if(entity.level().dimension().equals(Level.NETHER)){event.setResult(Event.Result.ALLOW);}
-        if (entity.level().dimension().equals(Level.NETHER)) {
+        Level level = entity.level();
+        //if(level.dimension().equals(Level.NETHER)){event.setResult(Event.Result.ALLOW);}
+        if (level.dimension().equals(Level.NETHER)) {
             event.setResult(Event.Result.DEFAULT);
         }
-        /*if(entity.level().getDayTime()%24000>13000) {
+        /*if(level.getDayTime()%24000>13000) {
             event.setResult(Player.BedSleepingProblem.TOO_FAR_AWAY);
         }*/
         //(event.getEntity() instanceof Player ? ((Player) event.getEntity()) : null).displayClientMessage(Component.literal(String.valueOf(event.getEntity().level().getDayTime())),false);
@@ -96,8 +100,8 @@ public class EventBus {
     @SubscribeEvent
     public static void jump(LivingEvent.LivingJumpEvent event){
         if(event.getEntity() instanceof  Player) {
-            event.getEntity().setHealth(event.getEntity().getHealth()-0.3F*-1);
-            ((Player) event.getEntity()).getFoodData().setFoodLevel(((Player) event.getEntity()).getFoodData().getFoodLevel() - 1 * -1);
+            event.getEntity().setHealth(event.getEntity().getHealth()+0.3F);
+            ((Player) event.getEntity()).getFoodData().setFoodLevel(((Player) event.getEntity()).getFoodData().getFoodLevel()+1);
         }
 
     }
@@ -139,8 +143,9 @@ public class EventBus {
     @SubscribeEvent
     public static void explodingXpBottles(ProjectileImpactEvent event){
         Projectile entity = event.getProjectile();
+        Level level = entity.level();
         if(entity instanceof ThrownExperienceBottle){
-            entity.level().explode(entity,entity.getX(),entity.getY(),entity.getZ(),8F, Level.ExplosionInteraction.TNT);
+            level.explode(entity,entity.getX(),entity.getY(),entity.getZ(),8F, Level.ExplosionInteraction.TNT);
         }
     }
     @SubscribeEvent
@@ -215,6 +220,10 @@ public class EventBus {
         }
         if(event.getTopItem().is(Blocks.NETHERRACK.asItem())){
             ItemStack item = BedrockItemRegistry.BEDROCK_MAGNET.get().getDefaultInstance();
+            event.setOutput(item);
+        }
+        if(event.getTopItem().is(Blocks.TNT.asItem())){
+            ItemStack item = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
             event.setOutput(item);
         }
         /*

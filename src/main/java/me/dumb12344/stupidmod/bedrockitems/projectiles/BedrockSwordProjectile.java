@@ -8,6 +8,7 @@ import net.minecraft.world.entity.projectile.ThrowableItemProjectile;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class BedrockSwordProjectile extends ThrowableItemProjectile {
     public BedrockSwordProjectile(EntityType<? extends BedrockSwordProjectile> type, Level level) {
@@ -18,12 +19,12 @@ public class BedrockSwordProjectile extends ThrowableItemProjectile {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult entityHitResult) {
+    protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        entityHitResult.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 1.0F);
+        entityHitResult.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 1000.0F);
     }
 
-    protected Item getDefaultItem() {
+    protected @NotNull Item getDefaultItem() {
         return BedrockItemRegistry.BEDROCK_SWORD.get();
     }
 }
