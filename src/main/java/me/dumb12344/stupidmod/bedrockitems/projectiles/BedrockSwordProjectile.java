@@ -1,7 +1,7 @@
 package me.dumb12344.stupidmod.bedrockitems.projectiles;
 
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockEntityTypeRegistry;
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
+import me.dumb12344.stupidmod.registry.BedrockEntityTypeRegistry;
+import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.ThrowableItemProjectile;

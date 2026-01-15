@@ -1,12 +1,10 @@
 package me.dumb12344.stupidmod.bedrockitems;
 
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockArmorMaterialRegistry;
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
-import net.minecraft.nbt.CompoundTag;
+import me.dumb12344.stupidmod.registry.BedrockArmorMaterialRegistry;
+import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;

@@ -1,4 +1,4 @@
-package me.dumb12344.stupidmod.bedrockitems.registry;
+package me.dumb12344.stupidmod.registry;
 
 import me.dumb12344.stupidmod.Stupidmod;
 import me.dumb12344.stupidmod.bedrockitems.projectiles.BedrockEnderPearlProjectile;

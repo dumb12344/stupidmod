@@ -1,7 +1,8 @@
 package me.dumb12344.stupidmod;
 
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
-import me.dumb12344.stupidmod.nuke.NukeRegistry;
+import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
+import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
+import me.dumb12344.stupidmod.registry.NukeRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
@@ -151,6 +152,10 @@ public class EventBus {
     @SubscribeEvent
     public static void grindstoneOP(GrindstoneEvent.OnPlaceItem event){
         if(!event.getBottomItem().isEmpty()){return;}
+        if(event.getTopItem().is(Items.CRAFTING_TABLE)){
+            event.setOutput(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_ITEM.get().getDefaultInstance());
+        }
+        /*
         Enchantment[] armorEnchantmentsArray = {
                 Enchantments.ALL_DAMAGE_PROTECTION,
                 Enchantments.AQUA_AFFINITY,
@@ -222,9 +227,16 @@ public class EventBus {
             ItemStack item = BedrockItemRegistry.BEDROCK_MAGNET.get().getDefaultInstance();
             event.setOutput(item);
         }
-        if(event.getTopItem().is(Blocks.TNT.asItem())){
+        if(event.getTopItem().is(Blocks.TNT.asItem())&&event.getBottomItem().isEmpty()){
             ItemStack item = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
-            event.setOutput(item);
+            if(event.getTopItem().getCount()>=8){
+                item.setCount(event.getTopItem().getCount()/8);
+                event.getBottomItem().setCount(event.getTopItem().getCount()%8);
+                event.setOutput(item);
+            }
+            else{
+                event.setOutput(ItemStack.EMPTY);
+            }
         }
         /*
         if(event.getTopItem().is(Items.WOODEN_AXE)){
@@ -243,7 +255,7 @@ public class EventBus {
             for(Enchantment e : enchantments)item.enchant(e, 127);
             event.setOutput(item);
         }
-        */
+        *
         if(event.getTopItem().is(Items.LEATHER_HELMET)){
             CompoundTag test = new CompoundTag();
             test.putBoolean("Unbreakable", true);
@@ -272,6 +284,7 @@ public class EventBus {
             for(Enchantment e : armorEnchantments)item.enchant(e, 127);
             event.setOutput(item);
         }
+        */
     }
 
 }

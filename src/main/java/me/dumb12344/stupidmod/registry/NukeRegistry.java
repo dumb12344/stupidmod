@@ -1,6 +1,8 @@
-package me.dumb12344.stupidmod.nuke;
+package me.dumb12344.stupidmod.registry;
 
 import me.dumb12344.stupidmod.Stupidmod;
+import me.dumb12344.stupidmod.nuke.NukeBlock;
+import me.dumb12344.stupidmod.nuke.PrimedNuke;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;

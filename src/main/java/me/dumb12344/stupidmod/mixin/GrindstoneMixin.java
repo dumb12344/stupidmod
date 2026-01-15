@@ -39,12 +39,13 @@ public abstract class GrindstoneMixin {
             public boolean mayPlace(@NotNull ItemStack p_39607_) {
                 boolean isStuff=false;
                 Set<Item> stuff = new HashSet<>();
-                stuff.add(Items.ENDER_PEARL);
-                stuff.add(Blocks.BEDROCK.asItem());
-                stuff.add(Items.REDSTONE);
-                stuff.add(Blocks.NETHERITE_BLOCK.asItem());
-                stuff.add(Blocks.NETHERRACK.asItem());
-                stuff.add(Blocks.TNT.asItem());
+                //stuff.add(Items.ENDER_PEARL);
+                //stuff.add(Blocks.BEDROCK.asItem());
+                //stuff.add(Items.REDSTONE);
+                //stuff.add(Blocks.NETHERITE_BLOCK.asItem());
+                //stuff.add(Blocks.NETHERRACK.asItem());
+                //stuff.add(Blocks.TNT.asItem());
+                stuff.add(Items.CRAFTING_TABLE);
                 for (Item e : stuff) {
                     if (p_39607_.getItem().equals(e)) {
                         isStuff = true;

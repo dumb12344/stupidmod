@@ -1,19 +1,12 @@
 package me.dumb12344.stupidmod.bedrockitems;
 
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockArmorMaterialRegistry;
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
-import net.minecraft.network.chat.Component;
-import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
+import me.dumb12344.stupidmod.registry.BedrockArmorMaterialRegistry;
+import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
-import net.minecraft.world.item.ArmorMaterial;
-import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import java.util.Objects;
 
 public class BedrockBootsItem extends ArmorItem {
     public BedrockBootsItem(Properties properties) {

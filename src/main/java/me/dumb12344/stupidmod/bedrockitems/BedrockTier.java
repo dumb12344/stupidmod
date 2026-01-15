@@ -1,6 +1,6 @@
 package me.dumb12344.stupidmod.bedrockitems;
 
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockTagRegistry;
+import me.dumb12344.stupidmod.registry.BedrockTagRegistry;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraftforge.common.ForgeTier;

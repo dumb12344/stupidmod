@@ -1,6 +1,8 @@
 package me.dumb12344.stupidmod.nuke;
 
 import javax.annotation.Nullable;
+
+import me.dumb12344.stupidmod.registry.NukeRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;

@@ -1,11 +1,14 @@
 package me.dumb12344.stupidmod;
 
-import com.mojang.logging.LogUtils;
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockItemRegistry;
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockEntityTypeRegistry;
-import me.dumb12344.stupidmod.nuke.NukeRegistry;
+import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationRecipe;
+import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
+import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
+import me.dumb12344.stupidmod.registry.BedrockEntityTypeRegistry;
+import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
+import me.dumb12344.stupidmod.registry.NukeRegistry;
 import me.dumb12344.stupidmod.nuke.NukeRenderer;
 import me.dumb12344.stupidmod.nuke.PrimedNuke;
+import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.BlockPos;
@@ -40,7 +43,6 @@ import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
 import net.minecraftforge.registries.DeferredRegister;
 import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
-import org.slf4j.Logger;
 
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod(Stupidmod.MODID)
@@ -91,6 +93,10 @@ public class Stupidmod {
         NukeRegistry.ENTITIES.register(modEventBus);
         NukeRegistry.ITEMS.register(modEventBus);
         BedrockEntityTypeRegistry.ENTITY_TYPES.register(modEventBus);
+        BedrockWorkstationRegistry.BLOCKS.register(modEventBus);
+        BedrockWorkstationRegistry.ITEMS.register(modEventBus);
+        BedrockWorkstationRegistry.MENU_TYPES.register(modEventBus);
+        //BedrockWorkstationRegistry.RECIPE_SERIALIZERS.register(modEventBus);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
 
@@ -143,6 +149,9 @@ public class Stupidmod {
 
         @SubscribeEvent
         public static void onClientSetup(FMLClientSetupEvent event) {
+            event.enqueueWork(
+                    () -> MenuScreens.register(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_MENU.get(), BedrockWorkstationScreen::new)
+            );
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_PICKAXE_PROJECTILE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_SWORD_PROJECTILE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_ENDER_PEARL_PROJECTILE.get(), ThrownItemRenderer::new);

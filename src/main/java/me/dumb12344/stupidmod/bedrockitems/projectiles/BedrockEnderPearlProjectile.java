@@ -1,7 +1,7 @@
 package me.dumb12344.stupidmod.bedrockitems.projectiles;
 
 
-import me.dumb12344.stupidmod.bedrockitems.registry.BedrockEntityTypeRegistry;
+import me.dumb12344.stupidmod.registry.BedrockEntityTypeRegistry;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
