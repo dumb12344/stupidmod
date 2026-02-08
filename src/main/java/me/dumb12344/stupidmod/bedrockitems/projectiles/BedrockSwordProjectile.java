@@ -21,7 +21,7 @@ public class BedrockSwordProjectile extends ThrowableItemProjectile {
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        entityHitResult.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 1000.0F);
+        if(entityHitResult.getEntity()!=this.getOwner())entityHitResult.getEntity().hurt(this.damageSources().thrown(this, this.getOwner()), 1000.0F);
     }
 
     protected @NotNull Item getDefaultItem() {

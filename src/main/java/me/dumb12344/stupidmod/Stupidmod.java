@@ -2,10 +2,8 @@ package me.dumb12344.stupidmod;
 
 import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationRecipe;
 import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
-import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
-import me.dumb12344.stupidmod.registry.BedrockEntityTypeRegistry;
-import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
-import me.dumb12344.stupidmod.registry.NukeRegistry;
+import me.dumb12344.stupidmod.duper.DuperScreen;
+import me.dumb12344.stupidmod.registry.*;
 import me.dumb12344.stupidmod.nuke.NukeRenderer;
 import me.dumb12344.stupidmod.nuke.PrimedNuke;
 import net.minecraft.client.gui.screens.MenuScreens;
@@ -96,6 +94,8 @@ public class Stupidmod {
         BedrockWorkstationRegistry.BLOCKS.register(modEventBus);
         BedrockWorkstationRegistry.ITEMS.register(modEventBus);
         BedrockWorkstationRegistry.MENU_TYPES.register(modEventBus);
+        DuperRegistry.ITEMS.register(modEventBus);
+        DuperRegistry.MENU_TYPES.register(modEventBus);
         //BedrockWorkstationRegistry.RECIPE_SERIALIZERS.register(modEventBus);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -151,6 +151,9 @@ public class Stupidmod {
         public static void onClientSetup(FMLClientSetupEvent event) {
             event.enqueueWork(
                     () -> MenuScreens.register(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_MENU.get(), BedrockWorkstationScreen::new)
+            );
+            event.enqueueWork(
+                    () -> MenuScreens.register(DuperRegistry.DUPER_MENU.get(), DuperScreen::new)
             );
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_PICKAXE_PROJECTILE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_SWORD_PROJECTILE.get(), ThrownItemRenderer::new);

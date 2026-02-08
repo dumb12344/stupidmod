@@ -2,12 +2,10 @@ package me.dumb12344.stupidmod.bedrockworkstation;
 
 import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
 import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
+import me.dumb12344.stupidmod.registry.DuperRegistry;
 import me.dumb12344.stupidmod.registry.NukeRegistry;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.game.ClientboundContainerSetSlotPacket;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.Container;
-import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.player.StackedContents;
@@ -22,7 +20,6 @@ import net.minecraft.world.level.block.Blocks;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
     private final ContainerLevelAccess access;
@@ -41,14 +38,18 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         this.addSlot(new Slot(this.inputSlot, 0, 56, 35));
         this.addSlot(new ResultSlot(player, this.inputSlot, this.outputSlot, 0, 116, 35){
             @Override
-            public void onTake(Player p_150638_, ItemStack p_150639_) {
-                if(p_150639_.is(NukeRegistry.NUKE_ITEM.get())){
+            public void onTake(Player p_150638_, ItemStack stack) {
+                //player.sendSystemMessage(stack.getDisplayName());
+                if(stack.is(NukeRegistry.NUKE_ITEM.get())){
                     ItemStack newStack =  inputSlot.getItem(0);
                     newStack.shrink(8);
                     inputSlot.setItem(0, newStack);
                 }
                 else{
-                    super.onTake(p_150638_, p_150639_);
+                    ItemStack newStack =  inputSlot.getItem(0);
+                    newStack.shrink(1);
+                    inputSlot.setItem(0, newStack);
+                    //super.onTake(p_150638_, stack);
                 }
             }
         });
@@ -146,6 +147,9 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         if(input.is(Blocks.NETHERRACK.asItem())){
             itemstack = BedrockItemRegistry.BEDROCK_MAGNET.get().getDefaultInstance();
         }
+        if(input.is(Blocks.COBBLESTONE.asItem())){
+            itemstack = DuperRegistry.DUPER_ITEM.get().getDefaultInstance();
+        }
         if(input.is(Blocks.TNT.asItem())){
             if(input.getCount()>=8) {
                 itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
@@ -195,7 +199,6 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
             itemstack = BedrockItemRegistry.BEDROCK_BOOTS.get().getDefaultInstance();
             itemstack.setTag(test);
             for(Enchantment e : armorEnchantments)itemstack.enchant(e, 127);
-            
         }
         resultContainer.setItem(0, itemstack);
         menu.setRemoteSlot(0, itemstack);
@@ -216,7 +219,29 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
     @Override
     public ItemStack quickMoveStack(Player player, int quickMovedSlotIndex) {
         //https://docs.minecraftforge.net/en/1.20.1/gui/menus/
-        return ItemStack.EMPTY;
+        //https://www.youtube.com/watch?v=340HcHexH60
+        Slot fromSlot = getSlot(quickMovedSlotIndex);
+        ItemStack fromItem = fromSlot.getItem();
+        if(fromItem.is(NukeRegistry.NUKE_ITEM.get()))return ItemStack.EMPTY;
+        if(fromItem.getCount()<=0)fromSlot.set(ItemStack.EMPTY);
+        if(!fromSlot.hasItem())return ItemStack.EMPTY;
+        //player.sendSystemMessage(Component.literal(String.valueOf(quickMovedSlotIndex)));
+        ItemStack fromItemCopy = fromItem.copy();
+        if(quickMovedSlotIndex >= 2){
+            //input, startIndex, endIndex, reverseDirection?
+            //inventory to menu
+            if(!moveItemStackTo(fromItem,0,2,false)){
+                return ItemStack.EMPTY;
+            }
+        }
+        else{
+            if(!moveItemStackTo(fromItem,2,36,false)){
+                return ItemStack.EMPTY;
+            }
+        }
+        fromSlot.setChanged();
+        fromSlot.onTake(player, fromItem);
+        return fromItemCopy;
     }
 
     @Override

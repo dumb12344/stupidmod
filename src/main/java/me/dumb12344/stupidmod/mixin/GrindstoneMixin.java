@@ -55,4 +55,31 @@ public abstract class GrindstoneMixin {
             }
         };
     }
+    @ModifyArg(
+            method = "<init>(ILnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/inventory/ContainerLevelAccess;)V",
+            at = @At(value = "INVOKE", ordinal = 1, target = "Lnet/minecraft/world/inventory/GrindstoneMenu;addSlot(Lnet/minecraft/world/inventory/Slot;)Lnet/minecraft/world/inventory/Slot;"),
+            index = 0
+    )
+    public Slot e2(Slot par1){
+        return new Slot(this.repairSlots, 1, 49, 40) {
+            public boolean mayPlace(@NotNull ItemStack p_39607_) {
+                boolean isStuff=false;
+                Set<Item> stuff = new HashSet<>();
+                //stuff.add(Items.ENDER_PEARL);
+                //stuff.add(Blocks.BEDROCK.asItem());
+                //stuff.add(Items.REDSTONE);
+                //stuff.add(Blocks.NETHERITE_BLOCK.asItem());
+                //stuff.add(Blocks.NETHERRACK.asItem());
+                //stuff.add(Blocks.TNT.asItem());
+                //stuff.add(Items.CRAFTING_TABLE);
+                stuff.add(Items.BEDROCK);
+                for (Item e : stuff) {
+                    if (p_39607_.getItem().equals(e)) {
+                        isStuff = true;
+                    }
+                }
+                return p_39607_.isDamageableItem() || p_39607_.is(Items.ENCHANTED_BOOK) || p_39607_.isEnchanted() || p_39607_.canGrindstoneRepair() || isStuff;
+            }
+        };
+    }
 }

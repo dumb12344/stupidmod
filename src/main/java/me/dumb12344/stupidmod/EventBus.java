@@ -1,10 +1,7 @@
 package me.dumb12344.stupidmod;
 
-import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
 import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
-import me.dumb12344.stupidmod.registry.NukeRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
-import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -12,10 +9,7 @@ import net.minecraft.world.entity.LightningBolt;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.projectile.ThrownExperienceBottle;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.enchantment.Enchantment;
-import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
@@ -151,8 +145,13 @@ public class EventBus {
     }
     @SubscribeEvent
     public static void grindstoneOP(GrindstoneEvent.OnPlaceItem event){
-        if(!event.getBottomItem().isEmpty()){return;}
-        if(event.getTopItem().is(Items.CRAFTING_TABLE)){
+        //if(!event.getBottomItem().isEmpty()){return;}
+        if(
+                event.getTopItem().is(Items.CRAFTING_TABLE) &&
+                event.getTopItem().getCount() == 1 &&
+                event.getBottomItem().is(Items.BEDROCK) &&
+                event.getBottomItem().getCount() == 8
+        ){
             event.setOutput(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_ITEM.get().getDefaultInstance());
         }
         /*

@@ -12,5 +12,6 @@
   "item.stupidmod.bedrock_magnet": "Bedrock Magnet",
   "generator.minecraft.floating_islands": "Floating Islands",
   "enchantment.level.127": "CXXVII",
-  "block.stupidmod.bedrock_workstation": "Bedrock Workstation"
+  "block.stupidmod.bedrock_workstation": "Bedrock Workstation",
+  "item.stupidmod.duper": "item.unregistered.duper"
 }

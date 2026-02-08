@@ -20,13 +20,10 @@ public class BedrockWorkstationRegistry {
     public static final DeferredRegister<MenuType<?>> MENU_TYPES = DeferredRegister.create(ForgeRegistries.MENU_TYPES, Stupidmod.MODID);
     public static final DeferredRegister<Block> BLOCKS = DeferredRegister.create(ForgeRegistries.BLOCKS, Stupidmod.MODID);
     public static final DeferredRegister<Item> ITEMS = DeferredRegister.create(ForgeRegistries.ITEMS, Stupidmod.MODID);
-    //public static final DeferredRegister<RecipeType<?>> RECIPE_TYPES = DeferredRegister.create(ForgeRegistries.RECIPE_TYPES, Stupidmod.MODID);
-    //public static final DeferredRegister<RecipeSerializer<?>> RECIPE_SERIALIZERS = DeferredRegister.create(ForgeRegistries.RECIPE_SERIALIZERS, Stupidmod.MODID);
     public static final RegistryObject<MenuType<BedrockWorkstationMenu>> BEDROCK_WORKSTATION_MENU = MENU_TYPES.register(
             "bedrock_workstation",
-            ()->new MenuType<BedrockWorkstationMenu>(BedrockWorkstationMenu::new, FeatureFlags.VANILLA_SET)
+            ()->new MenuType<>(BedrockWorkstationMenu::new, FeatureFlags.VANILLA_SET)
     );
-    public static final RegistryObject<BedrockWorkstationBlock> BEDROCK_WORKSTATION_BLOCK = BLOCKS.register("bedrock_workstation",()->new BedrockWorkstationBlock(BlockBehaviour.Properties.of().strength(2.5F)));
+    public static final RegistryObject<BedrockWorkstationBlock> BEDROCK_WORKSTATION_BLOCK = BLOCKS.register("bedrock_workstation",()->new BedrockWorkstationBlock(BlockBehaviour.Properties.of().strength(2.5F,1200.0F)));
     public static final RegistryObject<Item> BEDROCK_WORKSTATION_ITEM = ITEMS.register("bedrock_workstation",()->new BlockItem(BEDROCK_WORKSTATION_BLOCK.get(), new Item.Properties()));
-    //public static final RegistryObject<RecipeSerializer<BedrockWorkstationRecipe>> BEDROCK_WORKSTATION_RECIPE_SERIALIZER = RECIPE_SERIALIZERS.register("bedrock_workstation", () -> BedrockWorkstationRecipe.Serializer.INSTANCE);
 }
