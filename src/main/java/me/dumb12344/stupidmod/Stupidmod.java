@@ -1,6 +1,5 @@
 package me.dumb12344.stupidmod;
 
-import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationRecipe;
 import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
 import me.dumb12344.stupidmod.duper.DuperScreen;
 import me.dumb12344.stupidmod.registry.*;

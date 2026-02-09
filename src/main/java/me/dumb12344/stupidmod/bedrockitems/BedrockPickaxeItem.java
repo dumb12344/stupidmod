@@ -18,7 +18,7 @@ public class BedrockPickaxeItem extends PickaxeItem {
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand interactionHand) {
         ItemStack itemstack = player.getItemInHand(interactionHand);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
-        player.getCooldowns().addCooldown(this, 20);
+        player.getCooldowns().addCooldown(this, 5);
         if (!level.isClientSide) {
             BedrockPickaxeProjectile bedrockPickaxeProjectile = new BedrockPickaxeProjectile(level, player);
             bedrockPickaxeProjectile.setItem(itemstack);

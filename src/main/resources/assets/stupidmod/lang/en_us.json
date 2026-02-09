@@ -13,5 +13,6 @@
   "generator.minecraft.floating_islands": "Floating Islands",
   "enchantment.level.127": "CXXVII",
   "block.stupidmod.bedrock_workstation": "Bedrock Workstation",
-  "item.stupidmod.duper": "item.unregistered.duper"
+  "item.stupidmod.duper": "item.unregistered.duper",
+  "item.stupidmod.throwable_nuke": "Throwable Nuke"
 }

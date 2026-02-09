@@ -3,6 +3,7 @@ package me.dumb12344.stupidmod.registry;
 import me.dumb12344.stupidmod.Stupidmod;
 import me.dumb12344.stupidmod.nuke.NukeBlock;
 import me.dumb12344.stupidmod.nuke.PrimedNuke;
+import me.dumb12344.stupidmod.nuke.ThrowableNuke;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -33,6 +34,7 @@ public class NukeRegistry {
             ).build(new ResourceLocation(Stupidmod.MODID,"nuke").toString())
     );
     public static final RegistryObject<Item> NUKE_ITEM = ITEMS.register("nuke", () -> new BlockItem(NUKE.get(), new Item.Properties()));
+    public static final RegistryObject<Item> THROWABLE_NUKE_ITEM = ITEMS.register("throwable_nuke", () -> new ThrowableNuke(new Item.Properties()));
     private static boolean never(BlockState p_50806_, BlockGetter p_50807_, BlockPos p_50808_) {
         return false;
     }
