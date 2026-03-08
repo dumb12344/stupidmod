@@ -1,5 +1,7 @@
 package me.dumb12344.stupidmod;
 
+import me.dumb12344.stupidmod.C4.C4Model;
+import me.dumb12344.stupidmod.C4.C4Renderer;
 import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
 import me.dumb12344.stupidmod.duper.DuperScreen;
 import me.dumb12344.stupidmod.registry.*;
@@ -26,6 +28,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.event.server.ServerStartingEvent;
@@ -89,6 +92,8 @@ public class Stupidmod {
         NukeRegistry.BLOCKS.register(modEventBus);
         NukeRegistry.ENTITIES.register(modEventBus);
         NukeRegistry.ITEMS.register(modEventBus);
+        C4Registry.ITEMS.register(modEventBus);
+        C4Registry.ENTITIES.register(modEventBus);
         BedrockEntityTypeRegistry.ENTITY_TYPES.register(modEventBus);
         BedrockWorkstationRegistry.BLOCKS.register(modEventBus);
         BedrockWorkstationRegistry.ITEMS.register(modEventBus);
@@ -113,8 +118,8 @@ public class Stupidmod {
                 BlockPos blockpos = p_123425_.getPos().relative(p_123425_.getBlockState().getValue(DispenserBlock.FACING));
                 PrimedNuke primedNuke = new PrimedNuke(level, (double)blockpos.getX() + 0.5D, (double)blockpos.getY(), (double)blockpos.getZ() + 0.5D, (LivingEntity)null);
                 level.addFreshEntity(primedNuke);
-                level.playSound((Player)null, primedNuke.getX(), primedNuke.getY(), primedNuke.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
-                level.gameEvent((Entity)null, GameEvent.ENTITY_PLACE, blockpos);
+                level.playSound(null, primedNuke.getX(), primedNuke.getY(), primedNuke.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+                level.gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
                 //p_123426_.shrink(1);
                 return p_123426_;
             }
@@ -158,9 +163,14 @@ public class Stupidmod {
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_SWORD_PROJECTILE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_ENDER_PEARL_PROJECTILE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(NukeRegistry.PRIMED_NUKE.get(), NukeRenderer::new);
+            EntityRenderers.register(C4Registry.C4_ENTITY.get(), C4Renderer::new);
             // Some client setup code
             //LOGGER.info("HELLO FROM CLIENT SETUP");
             //LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());
+        }
+        @SubscribeEvent
+        public static void registerLayer(EntityRenderersEvent.RegisterLayerDefinitions event) {
+            event.registerLayerDefinition(C4Model.LAYER_LOCATION, C4Model::createBodyLayer);
         }
     }
 }
