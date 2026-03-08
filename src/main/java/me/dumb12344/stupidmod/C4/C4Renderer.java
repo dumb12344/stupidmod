@@ -20,6 +20,7 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
     }
 
     public void render(C4Entity entity, float p_116178_, float p_116179_, PoseStack poseStack, MultiBufferSource bufferSource, int p_116182_) {
+        poseStack.translate(0,0.125,0);
         poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
         this.model.renderToBuffer(poseStack, bufferSource.getBuffer(this.model.renderType(getTextureLocation(entity))), p_116182_, 10 << 16, 1, 1, 1, 1);
         super.render(entity, p_116178_, p_116179_, poseStack, bufferSource, p_116182_);

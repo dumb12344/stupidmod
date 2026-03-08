@@ -12,7 +12,6 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
-
 import javax.annotation.Nullable;
 
 public class C4Entity extends Entity implements TraceableEntity {
@@ -21,10 +20,10 @@ public class C4Entity extends Entity implements TraceableEntity {
 
     public C4Entity(EntityType<? extends C4Entity> p_32076_, Level p_32077_) {
         super(p_32076_, p_32077_);
-        this.blocksBuilding = true;
+        this.blocksBuilding = false;
     }
 
-    public C4Entity(Level p_32079_, double p_32080_, double p_32081_, double p_32082_, @Nullable LivingEntity p_32083_) {
+    public C4Entity(Level p_32079_, double p_32080_, double p_32081_, double p_32082_, @Nullable LivingEntity owner) {
         this(C4Registry.C4_ENTITY.get(), p_32079_);
         this.setPos(p_32080_, p_32081_, p_32082_);
         //double d0 = p_32079_.random.nextDouble() * (double)((float)Math.PI * 2F);
@@ -32,7 +31,7 @@ public class C4Entity extends Entity implements TraceableEntity {
         this.xo = p_32080_;
         this.yo = p_32081_;
         this.zo = p_32082_;
-        this.owner = p_32083_;
+        this.owner = owner;
     }
     public void shootFromRotation(Entity p_37252_, float p_37253_, float p_37254_, float p_37255_, float p_37256_, float p_37257_) {
         float f = -Mth.sin(p_37254_ * ((float)Math.PI / 180F)) * Mth.cos(p_37253_ * ((float)Math.PI / 180F));

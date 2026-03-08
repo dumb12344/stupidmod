@@ -50,7 +50,7 @@ public class C4Model extends EntityModel<C4Entity> {
                 .texOffs(28, 31).addBox(-3.0F, -2.8F, 6.7F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(32, 31).addBox(-4.3F, -2.8F, 6.7F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
                 .texOffs(34, 6).addBox(-5.6F, -2.8F, 6.7F, 1.0F, 2.0F, 1.0F, new CubeDeformation(0.0F))
-                .texOffs(0, 19).addBox(-5.8F, -2.7F, 3.9F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(4F, -1F, -4F));
+                .texOffs(0, 19).addBox(-5.8F, -2.7F, 3.9F, 4.0F, 2.0F, 4.0F, new CubeDeformation(0.0F)), PartPose.offset(4F, 2F, -4F));
 
         PartDefinition cube_r1 = bb_main.addOrReplaceChild("cube_r1", CubeListBuilder.create().texOffs(30, 25).addBox(0.0F, 0.0F, -1.0F, 1.0F, 0.0F, 3.0F, new CubeDeformation(0.0F)), PartPose.offsetAndRotation(-6.6F, -2.3F, 4.0F, -0.0873F, -0.7854F, 0.0F));
 

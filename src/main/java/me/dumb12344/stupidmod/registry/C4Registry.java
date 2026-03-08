@@ -18,7 +18,7 @@ public class C4Registry {
     public static final RegistryObject<EntityType<C4Entity>> C4_ENTITY = ENTITIES.register("c4",()->
             EntityType.Builder.<C4Entity>of(C4Entity::new, MobCategory.MISC)
             .fireImmune()
-            .sized(0.5F, 0.3F)
+            .sized(0.6F, 0.125F)
             .clientTrackingRange(30)
             .updateInterval(10
             ).build(new ResourceLocation(Stupidmod.MODID,"c4").toString())
