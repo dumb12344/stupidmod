@@ -150,6 +150,12 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         if(input.is(Blocks.COBBLESTONE.asItem())){
             itemstack = DuperRegistry.DUPER_ITEM.get().getDefaultInstance();
         }
+        if(input.is(NukeRegistry.NUKE_ITEM.get())){
+            itemstack = NukeRegistry.THROWABLE_NUKE_ITEM.get().getDefaultInstance();
+        }
+        if(input.is(NukeRegistry.THROWABLE_NUKE_ITEM.get())){
+            itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
+        }
         if(input.is(Blocks.TNT.asItem())){
             if(input.getCount()>=8) {
                 itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
