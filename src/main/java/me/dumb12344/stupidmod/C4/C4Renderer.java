@@ -45,6 +45,9 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
                     break;
             }
         }
+        else{
+            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+        }
         poseStack.translate(0,-0.125,0);
         this.model.renderToBuffer(poseStack, bufferSource.getBuffer(this.model.renderType(getTextureLocation(entity))), p_116182_, 10 << 16, 1, 1, 1, 1);
         super.render(entity, p_116178_, p_116179_, poseStack, bufferSource, p_116182_);
