@@ -42,8 +42,10 @@ public class C4Detonator extends Item {
                     player.getBoundingBox().inflate(30)
             )
             .forEach((C4Entity entity) -> {
-                if (!entity.getOwner().is(player))return;
-                if(player.isCrouching())entity.disarm();
+                // owner is cleared on relog for some reason
+                if(entity.getOwner()==null){}
+                else if (!entity.getOwner().is(player))return;
+                if(player.isCrouching()) entity.disarm();
                 else entity.explode();
             });
         }

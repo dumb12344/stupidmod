@@ -19,7 +19,7 @@ public class C4Item extends Item {
         ItemStack itemstack = player.getItemInHand(p_41192_);
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
-            C4Entity c4 = new C4Entity(level, player.getX(), player.getY(), player.getZ(), player);
+            C4Entity c4 = new C4Entity(level, player.getX(), player.getEyeY(), player.getZ(), player);
             c4.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 1.5F, 1.0F);
             level.addFreshEntity(c4);
         }

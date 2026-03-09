@@ -20,8 +20,8 @@ public class C4Registry {
             .fireImmune()
             .sized(0.6F, 0.125F)
             .clientTrackingRange(30)
-            .updateInterval(10
-            ).build(new ResourceLocation(Stupidmod.MODID,"c4").toString())
+            .updateInterval(20)
+            .build(new ResourceLocation(Stupidmod.MODID,"c4").toString())
     );
     public static final RegistryObject<Item> C4_ITEM = ITEMS.register("c4", () -> new C4Item(new Item.Properties()));
     public static final RegistryObject<Item> C4_DETONATOR_ITEM = ITEMS.register("c4_detonator", () -> new C4Detonator(new Item.Properties()));
