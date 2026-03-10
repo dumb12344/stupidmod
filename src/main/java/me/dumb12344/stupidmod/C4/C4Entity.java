@@ -15,8 +15,8 @@ import net.minecraft.world.phys.BlockHitResult;
 import javax.annotation.Nullable;
 
 public class C4Entity extends AbstractArrow {
-    public boolean isOnWall = false;
-    public Direction isOnWallDirection = Direction.DOWN;
+    public Direction isOnWallDirection = Direction.UP;
+    private boolean explodeNextTick = false;
     public C4Entity(EntityType<? extends C4Entity> p_32076_, Level p_32077_) {
         super(p_32076_, p_32077_);
         this.blocksBuilding = false;
@@ -31,17 +31,19 @@ public class C4Entity extends AbstractArrow {
         this.yo = p_32081_;
         this.zo = p_32082_;
         this.setSoundEvent(SoundEvents.STONE_HIT);
-    }
-
-    protected MovementEmission getMovementEmission() {
-        return MovementEmission.NONE;
+        this.setOwner(owner);
     }
 
     @Override
     protected void onHitBlock(BlockHitResult p_36755_) {
         super.onHitBlock(p_36755_);
-        this.isOnWall = true;
         this.isOnWallDirection = p_36755_.getDirection();
+    }
+
+    @Override
+    public void tick() {
+        if(explodeNextTick)explode();
+        super.tick();
     }
 
     @Override
@@ -56,6 +58,10 @@ public class C4Entity extends AbstractArrow {
     @Override
     protected ItemStack getPickupItem() {
         return C4Registry.C4_ITEM.get().getDefaultInstance();
+    }
+
+    public void delayedExplode(){
+        explodeNextTick = true;
     }
 
     public void explode() {

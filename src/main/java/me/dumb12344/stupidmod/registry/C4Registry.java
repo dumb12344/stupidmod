@@ -24,5 +24,5 @@ public class C4Registry {
             .build(new ResourceLocation(Stupidmod.MODID,"c4").toString())
     );
     public static final RegistryObject<Item> C4_ITEM = ITEMS.register("c4", () -> new C4Item(new Item.Properties()));
-    public static final RegistryObject<Item> C4_DETONATOR_ITEM = ITEMS.register("c4_detonator", () -> new C4Detonator(new Item.Properties()));
+    public static final RegistryObject<Item> C4_DETONATOR_ITEM = ITEMS.register("c4_detonator", () -> new C4Detonator(new Item.Properties().stacksTo(1)));
 }

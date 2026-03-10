@@ -1,14 +1,18 @@
 package me.dumb12344.stupidmod.C4;
 
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
@@ -38,15 +42,14 @@ public class C4Detonator extends Item {
         ItemStack itemstack = player.getItemInHand(hand);
         player.startUsingItem(hand);
         if(!level.isClientSide()) {
-            level.getEntitiesOfClass(C4Entity.class,
-                    player.getBoundingBox().inflate(30)
-            )
-            .forEach((C4Entity entity) -> {
+            ((ServerLevel)level).getAllEntities().forEach((Entity entity) -> {
+                if(!(entity instanceof C4Entity)) return;
+                C4Entity c4entity = (C4Entity) entity;
                 // owner is cleared on relog for some reason
-                if(entity.getOwner()==null){}
-                else if (!entity.getOwner().is(player))return;
-                if(player.isCrouching()) entity.disarm();
-                else entity.explode();
+                if (c4entity.getOwner() == null) {
+                } else if (!c4entity.getOwner().is(player)) return;
+                if (player.isCrouching()) c4entity.disarm();
+                else c4entity.explode();
             });
         }
         return InteractionResultHolder.consume(itemstack);

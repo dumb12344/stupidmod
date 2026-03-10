@@ -1,32 +1,36 @@
 package me.dumb12344.stupidmod;
 
+import me.dumb12344.stupidmod.C4.C4Entity;
 import me.dumb12344.stupidmod.C4.C4Model;
 import me.dumb12344.stupidmod.C4.C4Renderer;
 import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
 import me.dumb12344.stupidmod.duper.DuperScreen;
-import me.dumb12344.stupidmod.registry.*;
 import me.dumb12344.stupidmod.nuke.NukeRenderer;
 import me.dumb12344.stupidmod.nuke.PrimedNuke;
+import me.dumb12344.stupidmod.registry.*;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.entity.EntityRenderers;
 import net.minecraft.client.renderer.entity.ThrownItemRenderer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.BlockSource;
+import net.minecraft.core.Position;
+import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.CreativeModeTab;
+import net.minecraft.world.item.CreativeModeTabs;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.DispenserBlock;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.AABB;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.client.event.EntityRenderersEvent;
 import net.minecraftforge.common.MinecraftForge;
@@ -124,6 +128,20 @@ public class Stupidmod {
                 return p_123426_;
             }
         });
+        DispenserBlock.registerBehavior(C4Registry.C4_DETONATOR_ITEM.get(), new DefaultDispenseItemBehavior() {
+            @Override
+            public ItemStack execute(BlockSource blockSource, ItemStack p_123386_) {
+                blockSource.getLevel().getEntitiesOfClass(C4Entity.class,
+                        AABB.ofSize(blockSource.getPos().getCenter(), 10, 10, 10)
+                ).forEach(C4Entity::delayedExplode);
+                return p_123386_;
+            }
+        });
+        DispenserBlock.registerBehavior(C4Registry.C4_ITEM.get(), new AbstractProjectileDispenseBehavior() {
+            protected Projectile getProjectile(Level p_123407_, Position p_123408_, ItemStack p_123409_) {
+                return new C4Entity(p_123407_, p_123408_.x(), p_123408_.y(), p_123408_.z(), null);
+            }
+        });
         // Some common setup code
         //LOGGER.info("HELLO FROM COMMON SETUP");
         //LOGGER.info("DIRT BLOCK >> {}", ForgeRegistries.BLOCKS.getKey(Blocks.DIRT));
@@ -137,7 +155,22 @@ public class Stupidmod {
 
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
-//        if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS) event.accept(EXAMPLE_BLOCK_ITEM);
+        if (event.getTabKey() == CreativeModeTabs.FOOD_AND_DRINKS){
+            event.accept(BedrockItemRegistry.BEDROCK_ACCELERATOR);
+            event.accept(BedrockItemRegistry.BEDROCK_BOOTS);
+            event.accept(BedrockItemRegistry.BEDROCK_COMMAND_LINE);
+            event.accept(BedrockItemRegistry.BEDROCK_ENDER_PEARL);
+            event.accept(BedrockItemRegistry.BEDROCK_HELMET);
+            event.accept(BedrockItemRegistry.BEDROCK_MAGNET);
+            event.accept(BedrockItemRegistry.BEDROCK_PICKAXE);
+            event.accept(BedrockItemRegistry.BEDROCK_SWORD);
+            event.accept(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_ITEM);
+            event.accept(C4Registry.C4_ITEM);
+            event.accept(C4Registry.C4_DETONATOR_ITEM);
+            event.accept(DuperRegistry.DUPER_ITEM);
+            event.accept(NukeRegistry.NUKE_ITEM);
+            event.accept(NukeRegistry.THROWABLE_NUKE_ITEM);
+        }
     }
 
     // You can use SubscribeEvent and let the Event Bus discover methods to call

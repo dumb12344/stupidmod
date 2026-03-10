@@ -20,34 +20,30 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
     }
 
     public void render(C4Entity entity, float p_116178_, float p_116179_, PoseStack poseStack, MultiBufferSource bufferSource, int p_116182_) {
-        if(entity.isOnWall) {
-            switch(entity.isOnWallDirection){
-                case DOWN:
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(0));
-                    break;
-                case UP:
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-                    break;
-                case NORTH:
-                    poseStack.mulPose(Axis.XP.rotationDegrees(90));
-                    break;
-                case SOUTH:
-                    poseStack.mulPose(Axis.XN.rotationDegrees(90));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(180));
-                    break;
-                case EAST:
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(90));
-                    poseStack.mulPose(Axis.YN.rotationDegrees(90));
-                    break;
-                case WEST:
-                    poseStack.mulPose(Axis.ZN.rotationDegrees(90));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(90));
-                    break;
-            }
+        switch(entity.isOnWallDirection){
+            case DOWN:
+                poseStack.mulPose(Axis.ZP.rotationDegrees(0));
+                break;
+            case UP:
+                poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+                break;
+            case NORTH:
+                poseStack.mulPose(Axis.XP.rotationDegrees(90));
+                break;
+            case SOUTH:
+                poseStack.mulPose(Axis.XN.rotationDegrees(90));
+                poseStack.mulPose(Axis.YP.rotationDegrees(180));
+                break;
+            case EAST:
+                poseStack.mulPose(Axis.ZP.rotationDegrees(90));
+                poseStack.mulPose(Axis.YN.rotationDegrees(90));
+                break;
+            case WEST:
+                poseStack.mulPose(Axis.ZN.rotationDegrees(90));
+                poseStack.mulPose(Axis.YP.rotationDegrees(90));
+                break;
         }
-        else{
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
-        }
+
         poseStack.translate(0,-0.125,0);
         this.model.renderToBuffer(poseStack, bufferSource.getBuffer(this.model.renderType(getTextureLocation(entity))), p_116182_, 10 << 16, 1, 1, 1, 1);
         super.render(entity, p_116178_, p_116179_, poseStack, bufferSource, p_116182_);
