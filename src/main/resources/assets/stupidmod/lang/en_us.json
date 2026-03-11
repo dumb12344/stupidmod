@@ -16,5 +16,7 @@
   "item.stupidmod.duper": "item.unregistered.duper",
   "item.stupidmod.throwable_nuke": "Throwable Nuke",
   "item.stupidmod.c4": "C4",
-  "item.stupidmod.c4_detonator": "C4 Detonator"
+  "item.stupidmod.c4_detonator": "C4 Detonator",
+  "item.stupidmod.c4_machine_gun": "C4 Machine Gun",
+  "item.stupidmod.rocket_jumper": "Rocket Jumper"
 }

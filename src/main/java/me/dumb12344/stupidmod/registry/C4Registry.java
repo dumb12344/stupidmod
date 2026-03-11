@@ -3,6 +3,7 @@ package me.dumb12344.stupidmod.registry;
 import me.dumb12344.stupidmod.C4.C4Detonator;
 import me.dumb12344.stupidmod.C4.C4Entity;
 import me.dumb12344.stupidmod.C4.C4Item;
+import me.dumb12344.stupidmod.C4.C4MachineGun;
 import me.dumb12344.stupidmod.Stupidmod;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.EntityType;
@@ -24,5 +25,6 @@ public class C4Registry {
             .build(new ResourceLocation(Stupidmod.MODID,"c4").toString())
     );
     public static final RegistryObject<Item> C4_ITEM = ITEMS.register("c4", () -> new C4Item(new Item.Properties()));
+    public static final RegistryObject<Item> C4_MACHINE_GUN = ITEMS.register("c4_machine_gun", () -> new C4MachineGun(new Item.Properties().stacksTo(1)));
     public static final RegistryObject<Item> C4_DETONATOR_ITEM = ITEMS.register("c4_detonator", () -> new C4Detonator(new Item.Properties().stacksTo(1)));
 }

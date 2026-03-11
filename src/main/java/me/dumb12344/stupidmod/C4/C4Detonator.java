@@ -11,8 +11,6 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.minecraft.world.item.UseAnim;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.levelgen.structure.BoundingBox;
-import net.minecraft.world.phys.AABB;
 import org.jetbrains.annotations.Nullable;
 import java.util.List;
 
@@ -46,10 +44,10 @@ public class C4Detonator extends Item {
                 if(!(entity instanceof C4Entity)) return;
                 C4Entity c4entity = (C4Entity) entity;
                 // owner is cleared on relog for some reason
-                if (c4entity.getOwner() == null) {
-                } else if (!c4entity.getOwner().is(player)) return;
+                if (c4entity.getOwner() == null) {}
+                else if (!c4entity.getOwner().is(player)) return;
                 if (player.isCrouching()) c4entity.disarm();
-                else c4entity.explode();
+                else c4entity.delayedExplode();
             });
         }
         return InteractionResultHolder.consume(itemstack);

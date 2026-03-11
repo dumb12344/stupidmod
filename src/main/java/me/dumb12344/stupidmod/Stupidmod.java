@@ -3,6 +3,7 @@ package me.dumb12344.stupidmod;
 import me.dumb12344.stupidmod.C4.C4Entity;
 import me.dumb12344.stupidmod.C4.C4Model;
 import me.dumb12344.stupidmod.C4.C4Renderer;
+import me.dumb12344.stupidmod.RocketJumper.RocketJumperRenderer;
 import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
 import me.dumb12344.stupidmod.duper.DuperScreen;
 import me.dumb12344.stupidmod.nuke.NukeRenderer;
@@ -104,6 +105,8 @@ public class Stupidmod {
         BedrockWorkstationRegistry.MENU_TYPES.register(modEventBus);
         DuperRegistry.ITEMS.register(modEventBus);
         DuperRegistry.MENU_TYPES.register(modEventBus);
+        RocketJumperRegistry.ENTITIES.register(modEventBus);
+        RocketJumperRegistry.ITEMS.register(modEventBus);
         //BedrockWorkstationRegistry.RECIPE_SERIALIZERS.register(modEventBus);
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -166,10 +169,12 @@ public class Stupidmod {
             event.accept(BedrockItemRegistry.BEDROCK_SWORD);
             event.accept(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_ITEM);
             event.accept(C4Registry.C4_ITEM);
+            event.accept(C4Registry.C4_MACHINE_GUN);
             event.accept(C4Registry.C4_DETONATOR_ITEM);
             event.accept(DuperRegistry.DUPER_ITEM);
             event.accept(NukeRegistry.NUKE_ITEM);
             event.accept(NukeRegistry.THROWABLE_NUKE_ITEM);
+            event.accept(RocketJumperRegistry.ROCKET_JUMPER);
         }
     }
 
@@ -197,6 +202,7 @@ public class Stupidmod {
             EntityRenderers.register(BedrockEntityTypeRegistry.BEDROCK_ENDER_PEARL_PROJECTILE.get(), ThrownItemRenderer::new);
             EntityRenderers.register(NukeRegistry.PRIMED_NUKE.get(), NukeRenderer::new);
             EntityRenderers.register(C4Registry.C4_ENTITY.get(), C4Renderer::new);
+            EntityRenderers.register(RocketJumperRegistry.ROCKET_JUMPER_ENTITY.get(), RocketJumperRenderer::new);
             // Some client setup code
             //LOGGER.info("HELLO FROM CLIENT SETUP");
             //LOGGER.info("MINECRAFT NAME >> {}", Minecraft.getInstance().getUser().getName());

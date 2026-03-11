@@ -4,9 +4,12 @@ import me.dumb12344.stupidmod.registry.C4Registry;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -20,6 +23,7 @@ public class C4Entity extends AbstractArrow {
     public C4Entity(EntityType<? extends C4Entity> p_32076_, Level p_32077_) {
         super(p_32076_, p_32077_);
         this.blocksBuilding = false;
+        this.pickup = Pickup.DISALLOWED;
     }
 
     public C4Entity(Level p_32079_, double p_32080_, double p_32081_, double p_32082_, @Nullable LivingEntity owner) {
@@ -32,8 +36,28 @@ public class C4Entity extends AbstractArrow {
         this.zo = p_32082_;
         this.setSoundEvent(SoundEvents.STONE_HIT);
         this.setOwner(owner);
+        this.pickup = Pickup.DISALLOWED;
     }
 
+    @Override
+    public boolean isPickable() {
+        return true;
+    }
+
+    @Override
+    public float getPickRadius() {
+        return 0.3F;
+    }
+
+    @Override
+    public InteractionResult interact(Player player, InteractionHand hand) {
+        if(player.level().isClientSide) return InteractionResult.PASS;
+        if (player.isCrouching() && (this.ownedBy(player) || this.getOwner() == null)) {
+            this.spawnAtLocation(this.getPickupItem(), 0.1F);
+            this.discard();
+        }
+        return InteractionResult.PASS;
+    }
     @Override
     protected void onHitBlock(BlockHitResult p_36755_) {
         super.onHitBlock(p_36755_);
@@ -56,7 +80,7 @@ public class C4Entity extends AbstractArrow {
     }
 
     @Override
-    protected ItemStack getPickupItem() {
+    public ItemStack getPickupItem() {
         return C4Registry.C4_ITEM.get().getDefaultInstance();
     }
 
