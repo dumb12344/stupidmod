@@ -43,7 +43,7 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
                 poseStack.mulPose(Axis.YP.rotationDegrees(90));
                 break;
         }
-
+        if(entity.camo) poseStack.scale(0,0,0);
         poseStack.translate(0,-0.125,0);
         this.model.renderToBuffer(
                 poseStack,

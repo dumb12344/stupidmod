@@ -8,6 +8,7 @@ import net.minecraft.world.entity.projectile.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.EntityHitResult;
 
 public class RocketJumperEntity extends AbstractArrow {
     public int age = 0;
@@ -23,6 +24,9 @@ public class RocketJumperEntity extends AbstractArrow {
         this.setNoGravity(true);
     }
 
+    @Override
+    protected void onHitEntity(EntityHitResult p_36757_) {}
+    
     @Override
     public void tick() {
         super.tick();
