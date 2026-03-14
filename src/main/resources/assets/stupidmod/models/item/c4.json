@@ -1,3 +1,6 @@
 {
-  "parent": "stupidmod:block/nuke"
+  "parent": "minecraft:item/generated",
+  "textures": {
+    "layer0": "stupidmod:item/c4"
+  }
 }

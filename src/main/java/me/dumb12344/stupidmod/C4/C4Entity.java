@@ -1,6 +1,7 @@
 package me.dumb12344.stupidmod.C4;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
+import me.dumb12344.stupidmod.Stupidmod;
 import me.dumb12344.stupidmod.registry.C4Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -40,7 +41,9 @@ import java.util.List;
 public class C4Entity extends Projectile {
     public Direction isOnWallDirection = Direction.UP;
     private boolean explodeNextTick = false;
+    private boolean disarmNextTick = false;
     public boolean camo = false;
+    public BlockState blockHitState;
     public C4Entity(EntityType<? extends C4Entity> p_32076_, Level p_32077_) {
         super(p_32076_, p_32077_);
         this.blocksBuilding = false;
@@ -80,8 +83,8 @@ public class C4Entity extends Projectile {
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
-        if (player.isCrouching() && this.canPlayerUseC4(player)) {
-            this.camo = true;
+        if (this.canPlayerUseC4(player)) {
+            this.camo = player.isCrouching();
         }
         return InteractionResult.PASS;
     }
@@ -96,6 +99,7 @@ public class C4Entity extends Projectile {
     }
     @Override
     protected void onHitBlock(BlockHitResult p_36755_) {
+        blockHitState = this.level().getBlockState(p_36755_.getBlockPos());
         this.lastState = this.level().getBlockState(p_36755_.getBlockPos());
         super.onHitBlock(p_36755_);
         Vec3 vec3 = p_36755_.getLocation().subtract(this.getX(), this.getY(), this.getZ());
@@ -115,6 +119,10 @@ public class C4Entity extends Projectile {
 
     public void delayedExplode(){
         explodeNextTick = true;
+    }
+
+    public void delayedDisarm(){
+        disarmNextTick = true;
     }
 
     public void explode() {
@@ -187,6 +195,7 @@ public class C4Entity extends Projectile {
 
     public void tick() {
         if(explodeNextTick)explode();
+        if(disarmNextTick)disarm();
         super.tick();
         boolean flag = this.isNoPhysics();
         Vec3 vec3 = this.getDeltaMovement();

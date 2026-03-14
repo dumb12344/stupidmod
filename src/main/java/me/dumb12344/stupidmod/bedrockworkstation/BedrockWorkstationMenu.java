@@ -1,9 +1,6 @@
 package me.dumb12344.stupidmod.bedrockworkstation;
 
-import me.dumb12344.stupidmod.registry.BedrockItemRegistry;
-import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
-import me.dumb12344.stupidmod.registry.DuperRegistry;
-import me.dumb12344.stupidmod.registry.NukeRegistry;
+import me.dumb12344.stupidmod.registry.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Inventory;
@@ -155,6 +152,12 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         }
         if(input.is(NukeRegistry.THROWABLE_NUKE_ITEM.get())){
             itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
+        }
+        if(input.is(Items.COAL)){
+            itemstack = C4Registry.C4_ITEM.get().getDefaultInstance();
+        }
+        if(input.is(Items.IRON_INGOT)){
+            itemstack = C4Registry.C4_DETONATOR_ITEM.get().getDefaultInstance();
         }
         if(input.is(Blocks.TNT.asItem())){
             if(input.getCount()>=8) {

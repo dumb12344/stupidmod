@@ -46,7 +46,7 @@ public class C4Detonator extends Item {
                 // owner is cleared on relog for some reason
                 if (c4entity.getOwner() == null || player.getAbilities().instabuild) {}
                 else if (!c4entity.isOwnedBy(player)) return;
-                if (player.isCrouching()) c4entity.disarm();
+                if (player.isCrouching()) c4entity.delayedDisarm();
                 else c4entity.delayedExplode();
             });
         }
