@@ -36,6 +36,10 @@ The bedrock workstation can be used to upgrade items
  - Bedrock gets converted into a barrier block
  - Coal gets converted into C4
  - An iron ingot gets converted into a C4 Detonator
+ - C4 gets converted into C4 machine gun
+ - A grass block gets converted into a zero-friction grass block
+ - A dirt block gets converted into a falling grass block
+ - A stone block gets converted into a fake stone block
 
 Many of these items have special abilities
  - Bedrock helmet gives you night vision
@@ -49,16 +53,22 @@ Many of these items have special abilities
 
 ## C4
 
+Right click to throw C4
+
 Punch to pick up (if you own it)
 
 Right click to disable camo, shift right click to enable
 
-C4 and detonator both work in dispensers :)
+C4 machine gun can be held down to throw C4 continuously.
+You can hold shift to spawn 100 at a time
+
+All of these work in dispensers :)
+You can use gunpowder in a dispenser to disarm
 
 ## Misc.
 
 All items are in the food and drinks creative tab
 
-Floating islands world preset has been re-implemented (for the most part)
+Floating islands world preset has been re-implemented from previous versions of minecraft (for the most part)
 
 I probably forgot something

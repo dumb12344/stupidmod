@@ -28,7 +28,6 @@ public class C4Item extends Item {
         if (!player.getAbilities().instabuild) {
             itemstack.shrink(1);
         }
-
         return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());
     }
 }

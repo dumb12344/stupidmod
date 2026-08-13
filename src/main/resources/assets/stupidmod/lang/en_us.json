@@ -18,5 +18,8 @@
   "item.stupidmod.c4": "C4",
   "item.stupidmod.c4_detonator": "C4 Detonator",
   "item.stupidmod.c4_machine_gun": "C4 Machine Gun",
-  "item.stupidmod.rocket_jumper": "Rocket Jumper"
+  "item.stupidmod.rocket_jumper": "Rocket Jumper",
+  "block.stupidmod.falling_grass_block": "Falling Grass Block",
+  "block.stupidmod.zero_friction_grass_block": "Zero Friction Grass Block",
+  "block.stupidmod.fake_stone": "Stone"
 }

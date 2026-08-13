@@ -1,7 +1,6 @@
 package me.dumb12344.stupidmod.C4;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import me.dumb12344.stupidmod.Stupidmod;
 import me.dumb12344.stupidmod.registry.C4Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -42,12 +41,18 @@ public class C4Entity extends Projectile {
     public Direction isOnWallDirection = Direction.UP;
     private boolean explodeNextTick = false;
     private boolean disarmNextTick = false;
-    public boolean camo = false;
     public BlockState blockHitState;
     public C4Entity(EntityType<? extends C4Entity> p_32076_, Level p_32077_) {
         super(p_32076_, p_32077_);
         this.blocksBuilding = false;
         this.pickup = AbstractArrow.Pickup.DISALLOWED;
+    }
+
+    public boolean getCamo() {
+        return this.entityData.get(CAMO);
+    }
+    public void setCamo(boolean value) {
+        this.entityData.set(CAMO, value);
     }
 
     public C4Entity(Level p_32079_, double p_32080_, double p_32081_, double p_32082_, @Nullable LivingEntity owner) {
@@ -78,13 +83,13 @@ public class C4Entity extends Projectile {
     }
 
     public boolean canPlayerUseC4(Player player){
-        return this.ownedBy(player) || this.getOwner() == null || player.getAbilities().instabuild;
+        return this.ownedBy(player) || player.getAbilities().instabuild;
     }
 
     @Override
     public InteractionResult interact(Player player, InteractionHand hand) {
         if (this.canPlayerUseC4(player)) {
-            this.camo = player.isCrouching();
+            setCamo(player.isCrouching());
         }
         return InteractionResult.PASS;
     }
@@ -92,7 +97,7 @@ public class C4Entity extends Projectile {
     public boolean hurt(DamageSource p_31776_, float p_31777_) {
         if(!(p_31776_.getDirectEntity() instanceof Player player)) return false;
         if (this.canPlayerUseC4(player)) {
-            this.spawnAtLocation(this.getPickupItem(), 0.1F);
+            if (!player.getAbilities().instabuild) this.spawnAtLocation(this.getPickupItem(), 0.1F);
             this.discard();
         }
         return true;
@@ -137,8 +142,9 @@ public class C4Entity extends Projectile {
         //this.level().addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
     }
     private static final double ARROW_BASE_DAMAGE = 2.0D;
-    private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(AbstractArrow.class, EntityDataSerializers.BYTE);
-    private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(AbstractArrow.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(C4Entity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(C4Entity.class, EntityDataSerializers.BYTE);
+    private static final EntityDataAccessor<Boolean> CAMO = SynchedEntityData.defineId(C4Entity.class, EntityDataSerializers.BOOLEAN);
     private static final int FLAG_CRIT = 1;
     private static final int FLAG_NOPHYSICS = 2;
     private static final int FLAG_CROSSBOW = 4;
@@ -176,6 +182,7 @@ public class C4Entity extends Projectile {
     protected void defineSynchedData() {
         this.entityData.define(ID_FLAGS, (byte)0);
         this.entityData.define(PIERCE_LEVEL, (byte)0);
+        this.entityData.define(CAMO, false);
     }
 
     public void shoot(double p_36775_, double p_36776_, double p_36777_, float p_36778_, float p_36779_) {
@@ -369,7 +376,7 @@ public class C4Entity extends Projectile {
     }
 
     protected void tickDespawn() {
-        ++this.life;
+        //++this.life;
         if (this.life >= 1200) {
             this.discard();
         }
@@ -418,6 +425,7 @@ public class C4Entity extends Projectile {
             p_36772_.put("inBlockState", NbtUtils.writeBlockState(this.lastState));
         }
 
+        p_36772_.putBoolean("camo", getCamo());
         p_36772_.putByte("shake", (byte)this.shakeTime);
         p_36772_.putBoolean("inGround", this.inGround);
         p_36772_.putByte("pickup", (byte)this.pickup.ordinal());
@@ -440,7 +448,7 @@ public class C4Entity extends Projectile {
         if (p_36761_.contains("damage", 99)) {
             this.baseDamage = p_36761_.getDouble("damage");
         }
-
+        setCamo(p_36761_.getBoolean("camo"));
         this.pickup = AbstractArrow.Pickup.byOrdinal(p_36761_.getByte("pickup"));
         this.setCritArrow(p_36761_.getBoolean("crit"));
         this.setPierceLevel(p_36761_.getByte("PierceLevel"));

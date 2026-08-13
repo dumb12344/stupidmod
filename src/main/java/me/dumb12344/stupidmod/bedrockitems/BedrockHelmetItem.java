@@ -19,7 +19,7 @@ public class BedrockHelmetItem extends ArmorItem {
         super.inventoryTick(stack, level, entity, p_41407_, p_41408_);
         if(!(entity instanceof Player player))return;
         if(player.getInventory().getArmor(3).is(BedrockItemRegistry.BEDROCK_HELMET.get())){
-            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 20, 255));
+            player.addEffect(new MobEffectInstance(MobEffects.NIGHT_VISION, 600, 255));
         }
 
     }

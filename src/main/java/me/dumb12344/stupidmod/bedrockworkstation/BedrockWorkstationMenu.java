@@ -159,10 +159,22 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         if(input.is(Items.IRON_INGOT)){
             itemstack = C4Registry.C4_DETONATOR_ITEM.get().getDefaultInstance();
         }
+        if(input.is(C4Registry.C4_ITEM.get())){
+            itemstack = C4Registry.C4_MACHINE_GUN.get().getDefaultInstance();
+        }
         if(input.is(Blocks.TNT.asItem())){
             if(input.getCount()>=8) {
                 itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
             }
+        }
+        if(input.is(Blocks.DIRT.asItem())){
+            itemstack = FallingGrassBlockRegistry.FALLING_GRASS_ITEM.get().getDefaultInstance();
+        }
+        if(input.is(Blocks.GRASS_BLOCK.asItem())){
+            itemstack = ZeroFrictionGrassBlockRegistry.ZERO_FRICTION_GRASS_ITEM.get().getDefaultInstance();
+        }
+        if(input.is(Blocks.STONE.asItem())){
+            itemstack = FakeStoneRegistry.FAKE_STONE_ITEM.get().getDefaultInstance();
         }
         /*
         if(input.is(Items.WOODEN_AXE)){
