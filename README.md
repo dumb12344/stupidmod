@@ -9,8 +9,8 @@ Totems and shields don't work
 Sleeping in the nether vs overworld is inverted
 
 Every advancement or recipe unlock has a 1 in 50 chance to
- - 60x lightning
- - 100 block radius explosion with fire
+ - spawn 60x lightning
+ - create a 100 block radius explosion with fire
  - and enable keepInventory to prevent annoyance
 
 Jumping gives you saturation and health
@@ -46,9 +46,9 @@ Many of these items have special abilities
  - Bedrock boots allow you to fly
  - Bedrock sword has a right click ability: Spawns a grid of swords
  - Bedrock pickaxe has a right click ability: Spawns a pickaxe projectile that mines in a 5 block radius
- - Bedrock ender pearl travels straight
+ - Bedrock ender pearl teleports you 50 blocks forward
  - Bedrock accelerator has a right click ability: Accelerates ticks of blocks when you click on them
- - Bedrock magnet attracts minerals (diamond, ancient debris, etc.) when in mainhand or offhand
+ - Bedrock magnet attracts minerals (diamond, ancient debris, etc.) and repels all other items unless in offhand
  - Bedrock command line gives you operator permissions
 
 ## C4

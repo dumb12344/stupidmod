@@ -9,17 +9,18 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import org.jetbrains.annotations.NotNull;
 
 public class C4MachineGun extends Item {
     public C4MachineGun(Properties p_41188_) {
         super(p_41188_);
     }
 
-    public int getUseDuration(ItemStack p_272765_) {
+    public int getUseDuration(@NotNull ItemStack p_272765_) {
         return 72000;
     }
 
-    public void onUseTick(Level level, LivingEntity player, ItemStack stack, int i) {
+    public void onUseTick(@NotNull Level level, LivingEntity player, @NotNull ItemStack stack, int i) {
         if (player.isCrouching()) return;
         level.playSound(null, player.getX(), player.getY(), player.getZ(), SoundEvents.ENDER_PEARL_THROW, SoundSource.NEUTRAL, 0.5F, 0.4F / (level.getRandom().nextFloat() * 0.4F + 0.8F));
         if (!level.isClientSide) {
@@ -28,7 +29,7 @@ public class C4MachineGun extends Item {
             level.addFreshEntity(c4);
         }
     }
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand p_41192_) {
+    public @NotNull InteractionResultHolder<ItemStack> use(@NotNull Level level, Player player, @NotNull InteractionHand p_41192_) {
         player.startUsingItem(p_41192_);
         ItemStack itemstack = player.getItemInHand(p_41192_);
         if (!player.isCrouching()) return InteractionResultHolder.sidedSuccess(itemstack, level.isClientSide());

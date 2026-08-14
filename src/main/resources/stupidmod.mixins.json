@@ -1,7 +1,7 @@
 {
   "required": true,
   "minVersion": "0.8",
-  "package": "me.dumb12344.stupidmod.mixin",
+  "package": "me.dumb12344.stupidmod.Mixin",
   "compatibilityLevel": "JAVA_8",
   "refmap": "stupidmod.refmap.json",
   "mixins": [

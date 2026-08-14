@@ -9,6 +9,7 @@ import net.minecraft.client.renderer.entity.*;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.NotNull;
 
 @OnlyIn(Dist.CLIENT)
 public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerParent<C4Entity, C4Model> {
@@ -24,7 +25,7 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
         this.context = context;
     }
 
-    public void render(C4Entity entity, float p_116178_, float p_116179_, PoseStack poseStack, MultiBufferSource bufferSource, int p_116182_) {
+    public void render(C4Entity entity, float p_116178_, float p_116179_, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int p_116182_) {
         switch(entity.isOnWallDirection){
             case DOWN:
                 poseStack.mulPose(Axis.ZP.rotationDegrees(0));
@@ -64,11 +65,11 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
         super.render(entity, p_116178_, p_116179_, poseStack, bufferSource, p_116182_);
     }
     @Override
-    public C4Model getModel() {
+    public @NotNull C4Model getModel() {
         return this.model;
     }
 
-    public ResourceLocation getTextureLocation(C4Entity entity) {
+    public @NotNull ResourceLocation getTextureLocation(@NotNull C4Entity entity) {
         /*if(entity.camo) {
             blockRenderer.getBlockModel(entity.blockHitState).getParticleIcon(ModelData.EMPTY).contents().name();
             blockRenderer.getBlockModel(entity.blockHitState).getQuads(
@@ -79,6 +80,6 @@ public class C4Renderer extends EntityRenderer<C4Entity> implements RenderLayerP
                     blockRenderer.getBlockModel(entity.blockHitState).getRenderTypes(entity.blockHitState, entity.level().getRandom(), ModelData.EMPTY).asList().get(0)
             ).get(0).getSprite().contents().name();
         }*/
-        return new ResourceLocation(Stupidmod.MODID, "textures/entity/c4texture.png");
+        return ResourceLocation.fromNamespaceAndPath(Stupidmod.MODID, "textures/entity/c4texture.png");
     }
 }

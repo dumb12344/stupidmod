@@ -1,6 +1,6 @@
 package me.dumb12344.stupidmod;
 
-import me.dumb12344.stupidmod.registry.BedrockWorkstationRegistry;
+import me.dumb12344.stupidmod.Registry.BedrockWorkstationRegistry;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.Entity;
@@ -28,7 +28,7 @@ import java.util.Objects;
 @Mod.EventBusSubscriber(modid = Stupidmod.MODID, bus = Mod.EventBusSubscriber.Bus.FORGE)
 public class EventBus {
     @SubscribeEvent
-    public static void advancementkill(AdvancementEvent.AdvancementEarnEvent event){
+    public static void advancementKill(AdvancementEvent.AdvancementEarnEvent event){
         Entity entity = event.getEntity();
         Level level = entity.level();
         if(event.getEntity().getRandom().nextIntBetweenInclusive(1,50)==1){
@@ -50,7 +50,7 @@ public class EventBus {
         }
     }
     @SubscribeEvent
-    public static void bedrockharvest(BlockEvent.BreakEvent event) {
+    public static void bedrockHarvest(BlockEvent.BreakEvent event) {
         if(event.getState().getBlock().equals(Blocks.BEDROCK)&&!event.getPlayer().isCreative()){
             Block.popResource((Level)event.getLevel(),event.getPos(),Blocks.BEDROCK.asItem().getDefaultInstance());
         }
@@ -68,7 +68,7 @@ public class EventBus {
         event.setCanceled(true);
     }
     @SubscribeEvent
-    public static void breakspeed(PlayerEvent.BreakSpeed event){
+    public static void breakSpeed(PlayerEvent.BreakSpeed event){
         event.setNewSpeed(event.getOriginalSpeed()*60F);
     }
     @SubscribeEvent

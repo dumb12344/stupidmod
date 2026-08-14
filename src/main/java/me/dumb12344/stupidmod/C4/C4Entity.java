@@ -1,7 +1,7 @@
 package me.dumb12344.stupidmod.C4;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
-import me.dumb12344.stupidmod.registry.C4Registry;
+import me.dumb12344.stupidmod.Registry.C4Registry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.particles.ParticleTypes;
@@ -33,9 +33,12 @@ import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.*;
 import net.minecraft.world.phys.shapes.VoxelShape;
+import net.minecraftforge.registries.ForgeRegistries;
+import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
 import java.util.List;
+import java.util.Objects;
 
 public class C4Entity extends Projectile {
     public Direction isOnWallDirection = Direction.UP;
@@ -87,7 +90,7 @@ public class C4Entity extends Projectile {
     }
 
     @Override
-    public InteractionResult interact(Player player, InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand) {
         if (this.canPlayerUseC4(player)) {
             setCamo(player.isCrouching());
         }
@@ -109,7 +112,7 @@ public class C4Entity extends Projectile {
         super.onHitBlock(p_36755_);
         Vec3 vec3 = p_36755_.getLocation().subtract(this.getX(), this.getY(), this.getZ());
         this.setDeltaMovement(vec3);
-        Vec3 vec31 = vec3.normalize().scale((double)0.05F);
+        Vec3 vec31 = vec3.normalize().scale(0.05F);
         this.setPosRaw(this.getX() - vec31.x, this.getY() - vec31.y, this.getZ() - vec31.z);
         this.playSound(this.getHitGroundSoundEvent(), 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         this.inGround = true;
@@ -141,18 +144,15 @@ public class C4Entity extends Projectile {
         this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), 0.3F, Level.ExplosionInteraction.NONE);
         //this.level().addParticle(ParticleTypes.EXPLOSION, this.getX(), this.getY(), this.getZ(), 1.0D, 0.0D, 0.0D);
     }
-    private static final double ARROW_BASE_DAMAGE = 2.0D;
+
     private static final EntityDataAccessor<Byte> ID_FLAGS = SynchedEntityData.defineId(C4Entity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Byte> PIERCE_LEVEL = SynchedEntityData.defineId(C4Entity.class, EntityDataSerializers.BYTE);
     private static final EntityDataAccessor<Boolean> CAMO = SynchedEntityData.defineId(C4Entity.class, EntityDataSerializers.BOOLEAN);
-    private static final int FLAG_CRIT = 1;
-    private static final int FLAG_NOPHYSICS = 2;
-    private static final int FLAG_CROSSBOW = 4;
     @Nullable
     private BlockState lastState;
     protected boolean inGround;
     protected int inGroundTime;
-    public AbstractArrow.Pickup pickup = AbstractArrow.Pickup.DISALLOWED;
+    public AbstractArrow.Pickup pickup;
     public int shakeTime;
     private int life;
     private double baseDamage = 2.0D;
@@ -188,11 +188,6 @@ public class C4Entity extends Projectile {
     public void shoot(double p_36775_, double p_36776_, double p_36777_, float p_36778_, float p_36779_) {
         super.shoot(p_36775_, p_36776_, p_36777_, p_36778_, p_36779_);
         this.life = 0;
-    }
-
-    public void lerpTo(double p_36728_, double p_36729_, double p_36730_, float p_36731_, float p_36732_, int p_36733_, boolean p_36734_) {
-        this.setPos(p_36728_, p_36729_, p_36730_);
-        this.setRot(p_36731_, p_36732_);
     }
 
     public void lerpMotion(double p_36786_, double p_36787_, double p_36788_) {
@@ -280,7 +275,7 @@ public class C4Entity extends Projectile {
                     }
                     switch (result) {
                         case SKIP_ENTITY:
-                            if (hitresult.getType() != HitResult.Type.ENTITY) { // If there is no entity, we just return default behaviour
+                            if (hitresult.getType() != HitResult.Type.ENTITY) { // If there is no entity, we just return default behavior
                                 this.onHit(hitresult);
                                 this.hasImpulse = true;
                                 break;
@@ -345,7 +340,7 @@ public class C4Entity extends Projectile {
                 f = this.getWaterInertia();
             }
 
-            this.setDeltaMovement(vec3.scale((double)f));
+            this.setDeltaMovement(vec3.scale(f));
             if (!this.isNoGravity() && !flag) {
                 Vec3 vec34 = this.getDeltaMovement();
                 this.setDeltaMovement(vec34.x, vec34.y - (double)0.05F, vec34.z);
@@ -363,11 +358,11 @@ public class C4Entity extends Projectile {
     private void startFalling() {
         this.inGround = false;
         Vec3 vec3 = this.getDeltaMovement();
-        this.setDeltaMovement(vec3.multiply((double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F), (double)(this.random.nextFloat() * 0.2F)));
+        this.setDeltaMovement(vec3.multiply(this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F, this.random.nextFloat() * 0.2F));
         this.life = 0;
     }
 
-    public void move(MoverType p_36749_, Vec3 p_36750_) {
+    public void move(@NotNull MoverType p_36749_, @NotNull Vec3 p_36750_) {
         super.move(p_36749_, p_36750_);
         if (p_36749_ != MoverType.SELF && this.shouldFall()) {
             this.startFalling();
@@ -394,9 +389,6 @@ public class C4Entity extends Projectile {
 
     }
 
-    protected void onHitEntity(EntityHitResult p_36757_) {
-    }
-
 
     protected SoundEvent getDefaultHitGroundSoundEvent() {
         return SoundEvents.STONE_HIT;
@@ -406,19 +398,16 @@ public class C4Entity extends Projectile {
         return this.soundEvent;
     }
 
-    protected void doPostHurtEffects(LivingEntity p_36744_) {
-    }
-
     @Nullable
     protected EntityHitResult findHitEntity(Vec3 p_36758_, Vec3 p_36759_) {
         return ProjectileUtil.getEntityHitResult(this.level(), this, p_36758_, p_36759_, this.getBoundingBox().expandTowards(this.getDeltaMovement()).inflate(1.0D), this::canHitEntity);
     }
 
-    protected boolean canHitEntity(Entity p_36743_) {
+    protected boolean canHitEntity(@NotNull Entity p_36743_) {
         return false;
     }
 
-    public void addAdditionalSaveData(CompoundTag p_36772_) {
+    public void addAdditionalSaveData(@NotNull CompoundTag p_36772_) {
         super.addAdditionalSaveData(p_36772_);
         p_36772_.putShort("life", (short)this.life);
         if (this.lastState != null) {
@@ -432,11 +421,11 @@ public class C4Entity extends Projectile {
         p_36772_.putDouble("damage", this.baseDamage);
         p_36772_.putBoolean("crit", this.isCritArrow());
         p_36772_.putByte("PierceLevel", this.getPierceLevel());
-        p_36772_.putString("SoundEvent", BuiltInRegistries.SOUND_EVENT.getKey(this.soundEvent).toString());
+        p_36772_.putString("SoundEvent", Objects.requireNonNull(ForgeRegistries.SOUND_EVENTS.getKey(this.soundEvent)).toString());
         p_36772_.putBoolean("ShotFromCrossbow", this.shotFromCrossbow());
     }
 
-    public void readAdditionalSaveData(CompoundTag p_36761_) {
+    public void readAdditionalSaveData(@NotNull CompoundTag p_36761_) {
         super.readAdditionalSaveData(p_36761_);
         this.life = p_36761_.getShort("life");
         if (p_36761_.contains("inBlockState", 10)) {
@@ -467,7 +456,7 @@ public class C4Entity extends Projectile {
 
     }
 
-    public void playerTouch(Player p_36766_) {
+    public void playerTouch(@NotNull Player p_36766_) {
         if (!this.level().isClientSide && (this.inGround || this.isNoPhysics()) && this.shakeTime <= 0) {
             if (this.tryPickup(p_36766_)) {
                 p_36766_.take(this, 1);
@@ -478,21 +467,18 @@ public class C4Entity extends Projectile {
     }
 
     protected boolean tryPickup(Player p_150121_) {
-        switch (this.pickup) {
-            case ALLOWED:
-                return p_150121_.getInventory().add(this.getPickupItem());
-            case CREATIVE_ONLY:
-                return p_150121_.getAbilities().instabuild;
-            default:
-                return false;
-        }
+        return switch (this.pickup) {
+            case ALLOWED -> p_150121_.getInventory().add(this.getPickupItem());
+            case CREATIVE_ONLY -> p_150121_.getAbilities().instabuild;
+            default -> false;
+        };
     }
 
     public ItemStack getPickupItem() {
         return C4Registry.C4_ITEM.get().getDefaultInstance();
     }
 
-    protected Entity.MovementEmission getMovementEmission() {
+    protected Entity.@NotNull MovementEmission getMovementEmission() {
         return Entity.MovementEmission.NONE;
     }
 
@@ -508,11 +494,7 @@ public class C4Entity extends Projectile {
         this.knockback = p_36736_;
     }
 
-    public int getKnockback() {
-        return this.knockback;
-    }
-
-    protected float getEyeHeight(Pose p_36752_, EntityDimensions p_36753_) {
+    protected float getEyeHeight(@NotNull Pose p_36752_, @NotNull EntityDimensions p_36753_) {
         return 0.13F;
     }
 
@@ -568,11 +550,6 @@ public class C4Entity extends Projectile {
 
     protected float getWaterInertia() {
         return 0.6F;
-    }
-
-    public void setNoPhysics(boolean p_36791_) {
-        this.noPhysics = p_36791_;
-        this.setFlag(2, p_36791_);
     }
 
     public boolean isNoPhysics() {

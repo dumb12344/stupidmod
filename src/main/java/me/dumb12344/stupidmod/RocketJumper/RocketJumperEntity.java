@@ -1,6 +1,6 @@
 package me.dumb12344.stupidmod.RocketJumper;
 
-import me.dumb12344.stupidmod.registry.RocketJumperRegistry;
+import me.dumb12344.stupidmod.Registry.RocketJumperRegistry;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.player.Player;
@@ -9,6 +9,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.EntityHitResult;
+import org.jetbrains.annotations.NotNull;
 
 public class RocketJumperEntity extends AbstractArrow {
     public int age = 0;
@@ -25,7 +26,7 @@ public class RocketJumperEntity extends AbstractArrow {
     }
 
     @Override
-    protected void onHitEntity(EntityHitResult p_36757_) {}
+    protected void onHitEntity(@NotNull EntityHitResult p_36757_) {}
     
     @Override
     public void tick() {
@@ -35,14 +36,14 @@ public class RocketJumperEntity extends AbstractArrow {
     }
 
     @Override
-    protected void onHitBlock(BlockHitResult p_36755_) {
+    protected void onHitBlock(@NotNull BlockHitResult p_36755_) {
         this.discard();
         float f = 8.0F;
         this.level().explode(this, this.getX(), this.getY(0.0625D), this.getZ(), f, Level.ExplosionInteraction.NONE);
     }
 
     @Override
-    protected ItemStack getPickupItem() {
-        return null;
+    protected @NotNull ItemStack getPickupItem() {
+        return ItemStack.EMPTY;
     }
 }

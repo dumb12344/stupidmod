@@ -1,0 +1,132 @@
+package me.dumb12344.stupidmod.Nuke;
+
+import javax.annotation.Nullable;
+import net.minecraft.core.BlockPos;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.stats.Stats;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.entity.projectile.Projectile;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
+import net.minecraft.world.level.Explosion;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
+import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.state.BlockBehaviour;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.StateDefinition;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.block.state.properties.BooleanProperty;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.BlockHitResult;
+import org.jetbrains.annotations.NotNull;
+
+public class NukeBlock extends Block {
+    public static final BooleanProperty UNSTABLE = BlockStateProperties.UNSTABLE;
+
+    public NukeBlock(BlockBehaviour.Properties p_57422_) {
+        super(p_57422_);
+        this.registerDefaultState(this.defaultBlockState().setValue(UNSTABLE, Boolean.FALSE));
+    }
+
+    public void onCaughtFire(BlockState state, Level world, BlockPos pos, @Nullable net.minecraft.core.Direction face, @Nullable LivingEntity igniter) {
+        explode(world, pos, igniter);
+    }
+
+    public void onPlace(BlockState p_57466_, @NotNull Level p_57467_, @NotNull BlockPos p_57468_, BlockState p_57469_, boolean p_57470_) {
+        if (!p_57469_.is(p_57466_.getBlock())) {
+            if (p_57467_.hasNeighborSignal(p_57468_)) {
+                onCaughtFire(p_57466_, p_57467_, p_57468_, null, null);
+                p_57467_.removeBlock(p_57468_, false);
+            }
+
+        }
+    }
+
+    public void neighborChanged(@NotNull BlockState p_57457_, Level p_57458_, @NotNull BlockPos p_57459_, @NotNull Block p_57460_, @NotNull BlockPos p_57461_, boolean p_57462_) {
+        if (p_57458_.hasNeighborSignal(p_57459_)) {
+            onCaughtFire(p_57457_, p_57458_, p_57459_, null, null);
+            p_57458_.removeBlock(p_57459_, false);
+        }
+
+    }
+
+    public void playerWillDestroy(Level p_57445_, @NotNull BlockPos p_57446_, @NotNull BlockState p_57447_, @NotNull Player p_57448_) {
+        if (!p_57445_.isClientSide() && !p_57448_.isCreative() && p_57447_.getValue(UNSTABLE)) {
+            onCaughtFire(p_57447_, p_57445_, p_57446_, null, null);
+        }
+
+        super.playerWillDestroy(p_57445_, p_57446_, p_57447_, p_57448_);
+    }
+
+    public void wasExploded(Level p_57441_, @NotNull BlockPos p_57442_, @NotNull Explosion p_57443_) {
+        if (!p_57441_.isClientSide) {
+            PrimedNuke primedNuke = new PrimedNuke(p_57441_, (double)p_57442_.getX() + 0.5D, p_57442_.getY(), (double)p_57442_.getZ() + 0.5D, p_57443_.getIndirectSourceEntity());
+            int i = primedNuke.getFuse();
+            primedNuke.setFuse((short)(p_57441_.random.nextInt(i / 4) + i / 8));
+            p_57441_.addFreshEntity(primedNuke);
+        }
+    }
+
+    @Deprecated //Forge: Prefer using IForgeBlock#onCaughtFire
+    public static void explode(Level p_57434_, BlockPos p_57435_) {
+        explode(p_57434_, p_57435_, null);
+    }
+
+    @Deprecated //Forge: Prefer using IForgeBlock#onCaughtFire
+    private static void explode(Level p_57437_, BlockPos p_57438_, @Nullable LivingEntity p_57439_) {
+        if (!p_57437_.isClientSide) {
+            PrimedNuke primedNuke = new PrimedNuke(p_57437_, (double)p_57438_.getX() + 0.5D, p_57438_.getY(), (double)p_57438_.getZ() + 0.5D, p_57439_);
+            p_57437_.addFreshEntity(primedNuke);
+            p_57437_.playSound(null, primedNuke.getX(), primedNuke.getY(), primedNuke.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
+            p_57437_.gameEvent(p_57439_, GameEvent.PRIME_FUSE, p_57438_);
+        }
+    }
+
+    public @NotNull InteractionResult use(@NotNull BlockState p_57450_, @NotNull Level p_57451_, @NotNull BlockPos p_57452_, Player p_57453_, @NotNull InteractionHand p_57454_, @NotNull BlockHitResult p_57455_) {
+        ItemStack itemstack = p_57453_.getItemInHand(p_57454_);
+        if (!itemstack.is(Items.FLINT_AND_STEEL) && !itemstack.is(Items.FIRE_CHARGE)) {
+            return super.use(p_57450_, p_57451_, p_57452_, p_57453_, p_57454_, p_57455_);
+        } else {
+            onCaughtFire(p_57450_, p_57451_, p_57452_, p_57455_.getDirection(), p_57453_);
+            p_57451_.setBlock(p_57452_, Blocks.AIR.defaultBlockState(), 11);
+            Item item = itemstack.getItem();
+            if (!p_57453_.isCreative()) {
+                if (itemstack.is(Items.FLINT_AND_STEEL)) {
+                    itemstack.hurtAndBreak(1, p_57453_, (p_57425_) -> p_57425_.broadcastBreakEvent(p_57454_));
+                } else {
+                    itemstack.shrink(1);
+                }
+            }
+
+            p_57453_.awardStat(Stats.ITEM_USED.get(item));
+            return InteractionResult.sidedSuccess(p_57451_.isClientSide);
+        }
+    }
+
+    public void onProjectileHit(Level p_57429_, @NotNull BlockState p_57430_, @NotNull BlockHitResult p_57431_, @NotNull Projectile p_57432_) {
+        if (!p_57429_.isClientSide) {
+            BlockPos blockpos = p_57431_.getBlockPos();
+            Entity entity = p_57432_.getOwner();
+            if (p_57432_.isOnFire() && p_57432_.mayInteract(p_57429_, blockpos)) {
+                onCaughtFire(p_57430_, p_57429_, blockpos, null, entity instanceof LivingEntity ? (LivingEntity)entity : null);
+                p_57429_.removeBlock(blockpos, false);
+            }
+        }
+
+    }
+
+    public boolean dropFromExplosion(@NotNull Explosion p_57427_) {
+        return false;
+    }
+
+    protected void createBlockStateDefinition(StateDefinition.Builder<Block, BlockState> p_57464_) {
+        p_57464_.add(UNSTABLE);
+    }
+}

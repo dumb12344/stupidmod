@@ -4,11 +4,11 @@ import me.dumb12344.stupidmod.C4.C4Entity;
 import me.dumb12344.stupidmod.C4.C4Model;
 import me.dumb12344.stupidmod.C4.C4Renderer;
 import me.dumb12344.stupidmod.RocketJumper.RocketJumperRenderer;
-import me.dumb12344.stupidmod.bedrockworkstation.BedrockWorkstationScreen;
-import me.dumb12344.stupidmod.duper.DuperScreen;
-import me.dumb12344.stupidmod.nuke.NukeRenderer;
-import me.dumb12344.stupidmod.nuke.PrimedNuke;
-import me.dumb12344.stupidmod.registry.*;
+import me.dumb12344.stupidmod.BedrockWorkstation.BedrockWorkstationScreen;
+import me.dumb12344.stupidmod.Duper.DuperScreen;
+import me.dumb12344.stupidmod.Nuke.NukeRenderer;
+import me.dumb12344.stupidmod.Nuke.PrimedNuke;
+import me.dumb12344.stupidmod.Registry.*;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.BiomeColors;
 import net.minecraft.client.renderer.entity.EntityRenderers;
@@ -21,10 +21,8 @@ import net.minecraft.core.dispenser.AbstractProjectileDispenseBehavior;
 import net.minecraft.core.dispenser.DefaultDispenseItemBehavior;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.item.*;
-import net.minecraft.world.level.BlockAndTintGetter;
 import net.minecraft.world.level.GrassColor;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.DispenserBlock;
@@ -38,17 +36,18 @@ import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.event.BuildCreativeModeTabContentsEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
-import net.minecraftforge.fml.ModLoadingContext;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
+import org.jetbrains.annotations.NotNull;
 
 @Mod(Stupidmod.MODID)
 public class Stupidmod {
     public static final String MODID = "stupidmod";
-    public static void RegisterAll(IEventBus modEventBus, Stupidmod instance) {
+    public Stupidmod(FMLJavaModLoadingContext context) {
+        IEventBus modEventBus = context.getModEventBus();
         BedrockItemRegistry.ITEMS.register(modEventBus);
         FuniSoundRegistry.SOUND_EVENTS.register(modEventBus);
         NukeRegistry.BLOCKS.register(modEventBus);
@@ -71,20 +70,17 @@ public class Stupidmod {
         ZeroFrictionGrassBlockRegistry.ITEMS.register(modEventBus);
         FakeStoneRegistry.BLOCKS.register(modEventBus);
         FakeStoneRegistry.ITEMS.register(modEventBus);
-        modEventBus.addListener(instance::commonSetup);
-        modEventBus.addListener(instance::addCreative);
-        MinecraftForge.EVENT_BUS.register(instance);
-        ModLoadingContext.get().registerConfig(ModConfig.Type.COMMON, Config.SPEC);
-    }
-    public Stupidmod() {
-        RegisterAll(FMLJavaModLoadingContext.get().getModEventBus(), this);
+        modEventBus.addListener(this::commonSetup);
+        modEventBus.addListener(this::addCreative);
+        MinecraftForge.EVENT_BUS.register(this);
+        context.registerConfig(ModConfig.Type.COMMON, Config.SPEC);
     }
     private void commonSetup(final FMLCommonSetupEvent event) {
         DispenserBlock.registerBehavior(NukeRegistry.NUKE.get(), new DefaultDispenseItemBehavior() {
-            protected ItemStack execute(BlockSource p_123425_, ItemStack p_123426_) {
+            protected @NotNull ItemStack execute(@NotNull BlockSource p_123425_, @NotNull ItemStack p_123426_) {
                 Level level = p_123425_.getLevel();
                 BlockPos blockpos = p_123425_.getPos().relative(p_123425_.getBlockState().getValue(DispenserBlock.FACING));
-                PrimedNuke primedNuke = new PrimedNuke(level, (double)blockpos.getX() + 0.5D, (double)blockpos.getY(), (double)blockpos.getZ() + 0.5D, (LivingEntity)null);
+                PrimedNuke primedNuke = new PrimedNuke(level, (double)blockpos.getX() + 0.5D, blockpos.getY(), (double)blockpos.getZ() + 0.5D, null);
                 level.addFreshEntity(primedNuke);
                 level.playSound(null, primedNuke.getX(), primedNuke.getY(), primedNuke.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0F, 1.0F);
                 level.gameEvent(null, GameEvent.ENTITY_PLACE, blockpos);
@@ -94,7 +90,7 @@ public class Stupidmod {
         });
         DispenserBlock.registerBehavior(C4Registry.C4_DETONATOR_ITEM.get(), new DefaultDispenseItemBehavior() {
             @Override
-            public ItemStack execute(BlockSource blockSource, ItemStack p_123386_) {
+            public @NotNull ItemStack execute(@NotNull BlockSource blockSource, @NotNull ItemStack p_123386_) {
                 blockSource.getLevel().getEntitiesOfClass(C4Entity.class,
                         AABB.ofSize(blockSource.getPos().getCenter(), 10, 10, 10)
                 ).forEach(C4Entity::delayedExplode);
@@ -102,12 +98,12 @@ public class Stupidmod {
             }
         });
         DispenserBlock.registerBehavior(C4Registry.C4_ITEM.get(), new AbstractProjectileDispenseBehavior() {
-            protected Projectile getProjectile(Level p_123407_, Position p_123408_, ItemStack p_123409_) {
+            protected @NotNull Projectile getProjectile(@NotNull Level p_123407_, @NotNull Position p_123408_, @NotNull ItemStack p_123409_) {
                 return new C4Entity(p_123407_, p_123408_.x(), p_123408_.y(), p_123408_.z(), null);
             }
         });
         DispenserBlock.registerBehavior(C4Registry.C4_MACHINE_GUN.get(), new AbstractProjectileDispenseBehavior() {
-            protected Projectile getProjectile(Level p_123407_, Position p_123408_, ItemStack p_123409_) {
+            protected @NotNull Projectile getProjectile(@NotNull Level p_123407_, Position p_123408_, @NotNull ItemStack p_123409_) {
                 return new C4Entity(p_123407_, p_123408_.x(), p_123408_.y(), p_123408_.z(), null);
             }
             private void spawnOne(BlockSource p_123366_, ItemStack p_123367_) {
@@ -115,11 +111,11 @@ public class Stupidmod {
                 Position position = DispenserBlock.getDispensePosition(p_123366_);
                 Direction direction = p_123366_.getBlockState().getValue(DispenserBlock.FACING);
                 Projectile projectile = this.getProjectile(level, position, p_123367_);
-                projectile.shoot((double)direction.getStepX(), (double)((float)direction.getStepY() + 0.1F), (double)direction.getStepZ(), this.getPower(), this.getUncertainty());
+                projectile.shoot(direction.getStepX(), (float)direction.getStepY() + 0.1F, direction.getStepZ(), this.getPower(), this.getUncertainty());
                 level.addFreshEntity(projectile);
                 //p_123367_.shrink(1);
             }
-            public ItemStack execute(BlockSource p_123366_, ItemStack p_123367_) {
+            public @NotNull ItemStack execute(@NotNull BlockSource p_123366_, @NotNull ItemStack p_123367_) {
                 for(int i = 0; i < 100; i++) {
                     spawnOne(p_123366_, p_123367_);
                 }
@@ -128,7 +124,7 @@ public class Stupidmod {
         });
         DispenserBlock.registerBehavior(Items.GUNPOWDER, new DefaultDispenseItemBehavior() {
             @Override
-            public ItemStack execute(BlockSource blockSource, ItemStack p_123386_) {
+            public @NotNull ItemStack execute(@NotNull BlockSource blockSource, @NotNull ItemStack p_123386_) {
                 blockSource.getLevel().getEntitiesOfClass(C4Entity.class,
                         AABB.ofSize(blockSource.getPos().getCenter(), 10, 10, 10)
                 ).forEach(C4Entity::delayedDisarm);
@@ -195,11 +191,11 @@ public class Stupidmod {
         public static void registerColor(RegisterColorHandlersEvent.Item event) {
             event.register((p_92687_, p_92688_) -> {
                 BlockState blockstate = ((BlockItem)p_92687_.getItem()).getBlock().defaultBlockState();
-                return event.getBlockColors().getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, p_92688_);
+                return event.getBlockColors().getColor(blockstate, null, null, p_92688_);
             }, FallingGrassBlockRegistry.FALLING_GRASS_ITEM.get());
             event.register((p_92687_, p_92688_) -> {
                 BlockState blockstate = ((BlockItem)p_92687_.getItem()).getBlock().defaultBlockState();
-                return event.getBlockColors().getColor(blockstate, (BlockAndTintGetter)null, (BlockPos)null, p_92688_);
+                return event.getBlockColors().getColor(blockstate, null, null, p_92688_);
             }, ZeroFrictionGrassBlockRegistry.ZERO_FRICTION_GRASS_ITEM.get());
         }
     }
