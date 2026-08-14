@@ -1,9 +1,7 @@
 package me.dumb12344.stupidmod.bedrockworkstation;
 
-import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import me.dumb12344.stupidmod.Stupidmod;
-import net.minecraft.core.NonNullList;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
@@ -15,37 +13,35 @@ import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.Nullable;
 
 public class BedrockWorkstationRecipe implements Recipe<SimpleContainer> {
-    private final NonNullList<Ingredient> inputItems;
-    private final ItemStack outputItem;
+    private final ItemStack input;
+    private final ItemStack output;
     private final ResourceLocation id;
-    public BedrockWorkstationRecipe(NonNullList<Ingredient> inputItems, ItemStack outputItem, ResourceLocation id) {
-        this.inputItems = inputItems;
-        this.outputItem = outputItem;
-        this.id = id;
-    }
-    @Override
-    public boolean matches(SimpleContainer container, Level level) {
-        if(level.isClientSide())return false;
-        return test(container.getItem(0), inputItems.get(0));
-    }
-    public static boolean test(@Nullable ItemStack stack, Ingredient ingredient) {
-        if (stack == null) {
-            return false;
-        } else if (ingredient.isEmpty()) {
-            return stack.isEmpty();
-        } else {
-            for(ItemStack itemstack : ingredient.getItems()) {
-                if (itemstack.is(stack.getItem())&&itemstack.getCount()>=stack.getCount()) {
-                    return true;
-                }
-            }
+    private final Modifiers modifiers;
 
-            return false;
-        }
+    public BedrockWorkstationRecipe(ItemStack input, ItemStack output, ResourceLocation id, Modifiers modifiers) {
+        this.input = input;
+        this.output = output;
+        this.id = id;
+        this.modifiers = modifiers;
     }
+
+    @Override
+    public boolean matches(SimpleContainer p_44002_, Level p_44003_) {
+        if (p_44003_.isClientSide()) return false;
+        return input.is(p_44002_.getItem(0).getItem()) && p_44002_.getItem(0).getCount() >= input.getCount();
+    }
+
     @Override
     public ItemStack assemble(SimpleContainer p_44001_, RegistryAccess p_267165_) {
-        return outputItem.copy();
+        return output.copy();
+    }
+
+    public int getInputCount() {
+        return input.getCount();
+    }
+
+    public Modifiers getModifiers() {
+        return modifiers;
     }
 
     @Override
@@ -55,7 +51,7 @@ public class BedrockWorkstationRecipe implements Recipe<SimpleContainer> {
 
     @Override
     public ItemStack getResultItem(RegistryAccess p_267052_) {
-        return outputItem.copy();
+        return output.copy();
     }
 
     @Override
@@ -73,43 +69,52 @@ public class BedrockWorkstationRecipe implements Recipe<SimpleContainer> {
         return Type.INSTANCE;
     }
 
-    public static class Type implements RecipeType<BedrockWorkstationRecipe>{
+    public static class Type implements RecipeType<BedrockWorkstationRecipe> {
         public static final Type INSTANCE = new Type();
         public static final String ID = "bedrock_workstation";
     }
 
-    public static class Serializer implements RecipeSerializer<BedrockWorkstationRecipe>{
+    public static class Serializer implements RecipeSerializer<BedrockWorkstationRecipe> {
         public static final Serializer INSTANCE = new Serializer();
         public static final ResourceLocation ID = new ResourceLocation(Stupidmod.MODID, "bedrock_workstation");
 
         @Override
-        public BedrockWorkstationRecipe fromJson(ResourceLocation location, JsonObject jsonObject) {
-            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(jsonObject, "output"));
-            JsonArray ingredients = GsonHelper.getAsJsonArray(jsonObject, "ingredients");
-            NonNullList<Ingredient> inputs = NonNullList.withSize(1, Ingredient.EMPTY);
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromJson(ingredients.get(i)));
+        public BedrockWorkstationRecipe fromJson(ResourceLocation p_44103_, JsonObject p_44104_) {
+            ItemStack output = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(p_44104_, "output"));
+            ItemStack input = ShapedRecipe.itemStackFromJson(GsonHelper.getAsJsonObject(p_44104_, "input"));
+            Modifiers modifiers;
+            if (p_44104_.has("modifiers")) {
+                modifiers = switch (p_44104_.get("modifiers").getAsString()){
+                    case "armor" -> Modifiers.ARMOR;
+                    case "sword" -> Modifiers.SWORD;
+                    case "pickaxe" -> Modifiers.PICKAXE;
+                    default -> Modifiers.NONE;
+                };
             }
-            return new BedrockWorkstationRecipe(inputs, output, location);
+            else {
+                modifiers = Modifiers.NONE;
+            }
+            return new BedrockWorkstationRecipe(input, output, p_44103_, modifiers);
         }
 
         @Override
-        public @Nullable BedrockWorkstationRecipe fromNetwork(ResourceLocation location, FriendlyByteBuf byteBuf) {
-            NonNullList<Ingredient> inputs = NonNullList.withSize(byteBuf.readInt(), Ingredient.EMPTY);
-            for (int i = 0; i < inputs.size(); i++) {
-                inputs.set(i, Ingredient.fromNetwork(byteBuf));
-            }
-            ItemStack output = byteBuf.readItem();
-            return new BedrockWorkstationRecipe(inputs, output, location);
+        public @Nullable BedrockWorkstationRecipe fromNetwork(ResourceLocation p_44105_, FriendlyByteBuf p_44106_) {
+            ItemStack input = p_44106_.readItem();
+            ItemStack output = p_44106_.readItem();
+            Modifiers modifiers = p_44106_.readEnum(Modifiers.class);
+            return new BedrockWorkstationRecipe(input, output, p_44105_, modifiers);
         }
 
         @Override
-        public void toNetwork(FriendlyByteBuf byteBuf, BedrockWorkstationRecipe recipe) {
-            byteBuf.writeInt(recipe.inputItems.size());
-            for(Ingredient ingredient : recipe.getIngredients()){
-                ingredient.toNetwork(byteBuf);
-            }
-            byteBuf.writeItemStack(recipe.getResultItem(null), false);
+        public void toNetwork(FriendlyByteBuf p_44101_, BedrockWorkstationRecipe p_44102_) {
+            p_44101_.writeItemStack(p_44102_.input, false);
+            p_44101_.writeItemStack(p_44102_.output, false);
         }
+    }
+    public enum Modifiers {
+        ARMOR,
+        SWORD,
+        PICKAXE,
+        NONE
     }
 }

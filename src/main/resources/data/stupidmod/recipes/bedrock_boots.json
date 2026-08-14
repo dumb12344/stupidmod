@@ -1,0 +1,12 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:leather_boots"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:bedrock_boots"
+  },
+  "modifiers": "armor"
+}

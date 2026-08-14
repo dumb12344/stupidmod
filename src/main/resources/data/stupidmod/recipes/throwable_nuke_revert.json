@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "stupidmod:throwable_nuke"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:nuke"
+  }
+}

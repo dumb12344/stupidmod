@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:netherite_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:bedrock_command_line"
+  }
+}

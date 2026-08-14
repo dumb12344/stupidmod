@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:bedrock"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:barrier"
+  }
+}

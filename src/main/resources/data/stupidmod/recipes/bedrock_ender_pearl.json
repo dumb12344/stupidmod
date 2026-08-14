@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:ender_pearl"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:bedrock_ender_pearl"
+  }
+}

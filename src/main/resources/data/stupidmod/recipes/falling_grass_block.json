@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:dirt"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:falling_grass_block"
+  }
+}

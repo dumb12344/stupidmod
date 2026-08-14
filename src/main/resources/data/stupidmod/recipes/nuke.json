@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 8,
+    "item": "minecraft:tnt"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:nuke"
+  }
+}

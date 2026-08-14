@@ -1,0 +1,12 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:leather_leggings"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:netherite_leggings"
+  },
+  "modifiers": "armor"
+}

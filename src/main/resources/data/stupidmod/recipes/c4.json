@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:coal"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:c4"
+  }
+}

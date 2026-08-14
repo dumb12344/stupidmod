@@ -60,6 +60,7 @@ public class Stupidmod {
         BedrockWorkstationRegistry.BLOCKS.register(modEventBus);
         BedrockWorkstationRegistry.ITEMS.register(modEventBus);
         BedrockWorkstationRegistry.MENU_TYPES.register(modEventBus);
+        BedrockWorkstationRegistry.RECIPE_SERIALIZERS.register(modEventBus);
         DuperRegistry.ITEMS.register(modEventBus);
         DuperRegistry.MENU_TYPES.register(modEventBus);
         RocketJumperRegistry.ENTITIES.register(modEventBus);

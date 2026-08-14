@@ -3,26 +3,34 @@ package me.dumb12344.stupidmod.bedrockworkstation;
 import me.dumb12344.stupidmod.registry.*;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.player.StackedContents;
-import net.minecraft.world.inventory.*;
+import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ContainerLevelAccess;
+import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Recipe;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Blocks;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
-public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
+public class BedrockWorkstationMenu extends AbstractContainerMenu {
     private final ContainerLevelAccess access;
     private final Player player;
-    final TransientCraftingContainer inputSlot = new TransientCraftingContainer(this,1,1);
-    final ResultContainer outputSlot = new ResultContainer(){
+    public int recipeCount = 1;
+    final SimpleContainer inputSlot = new SimpleContainer(1){
+        @Override
+        public void setChanged() {
+            super.setChanged();
+            BedrockWorkstationMenu.this.slotsChanged(this);
+        }
+    };
+    final SimpleContainer outputSlot = new SimpleContainer(1){
         public boolean canPlaceItem(){return false;}
     };
     public BedrockWorkstationMenu(int containerId, Inventory playerInventory){
@@ -32,25 +40,17 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         super(BedrockWorkstationRegistry.BEDROCK_WORKSTATION_MENU.get(), containerId);
         this.access = containerLevelAccess;
         this.player = playerInventory.player;
-        this.addSlot(new Slot(this.inputSlot, 0, 56, 35));
-        this.addSlot(new ResultSlot(player, this.inputSlot, this.outputSlot, 0, 116, 35){
+        this.addSlot(new Slot(this.inputSlot, 0, 56, 35) {
+
+        });
+        this.addSlot(new Slot(this.outputSlot, 0, 116, 35) {
             @Override
             public void onTake(Player p_150638_, ItemStack stack) {
-                //player.sendSystemMessage(stack.getDisplayName());
-                if(stack.is(NukeRegistry.NUKE_ITEM.get())){
-                    ItemStack newStack =  inputSlot.getItem(0);
-                    newStack.shrink(8);
-                    inputSlot.setItem(0, newStack);
-                }
-                else{
-                    ItemStack newStack =  inputSlot.getItem(0);
-                    newStack.shrink(1);
-                    inputSlot.setItem(0, newStack);
-                    //super.onTake(p_150638_, stack);
-                }
+                inputSlot.getItem(0).shrink(recipeCount);
+                BedrockWorkstationMenu.this.slotsChanged(this.container);
+                super.onTake(p_150638_, stack);
             }
         });
-        //this.addSlot(new Slot(this.outputSlot, 0, 116, 35));
 
         //inventory
         for(int k = 0; k < 3; ++k) {
@@ -63,27 +63,27 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
             this.addSlot(new Slot(playerInventory, l, 8 + l * 18, 142));
         }
     }
-    protected static void slotChanged(AbstractContainerMenu menu, Level level, Player player, CraftingContainer craftingContainer, ResultContainer resultContainer) {
-        if (level.isClientSide)return;
-        ItemStack input = craftingContainer.getItems().get(0);
-        /*
-        ServerPlayer serverplayer = (ServerPlayer) player;
-        SimpleContainer inventory = new SimpleContainer(1);
-        inventory.setItem(0,craftingContainer.getItem(0));
-        Optional<BedrockWorkstationRecipe> optional = level.getServer().getRecipeManager().getRecipeFor(BedrockWorkstationRecipe.Type.INSTANCE, inventory, level);
-        if (optional.isPresent()) {
-            BedrockWorkstationRecipe bedrockWorkstationRecipe = optional.get();
-            if (resultContainer.setRecipeUsed(level, serverplayer, bedrockWorkstationRecipe)) {
-                itemstack = bedrockWorkstationRecipe.assemble(inventory, level.registryAccess());
-            }
+    public static void slotChanged(BedrockWorkstationMenu menu, Level level, Player player, SimpleContainer inputContainer, SimpleContainer resultContainer) {
+        if (level.isClientSide) return;
+        ItemStack itemstack = ItemStack.EMPTY;
+        Optional<BedrockWorkstationRecipe> recipe = getCurrentRecipe(inputContainer, level);
+        if (recipe.isEmpty()) itemstack = ItemStack.EMPTY;
+        else {
+            itemstack = recipe.get().getResultItem(null);
+            menu.recipeCount = recipe.get().getInputCount();
+            applyModifiers(itemstack, recipe.get().getModifiers());
         }
-*/
-        ItemStack itemstack = getOutput(input);
+        //ItemStack itemstack = getOutput(input);
         resultContainer.setItem(0, itemstack);
         menu.setRemoteSlot(0, itemstack);
-        //serverplayer.connection.send(new ClientboundContainerSetSlotPacket(menu.containerId, menu.incrementStateId(), 0, itemstack));
     }
-    public void slotsChanged(Container p_39366_) {
+
+    public static Optional<BedrockWorkstationRecipe> getCurrentRecipe(SimpleContainer container, Level level) {
+        return level.getRecipeManager().getRecipeFor(BedrockWorkstationRecipe.Type.INSTANCE, container, level);
+    }
+
+    @Override
+    public void slotsChanged(@NotNull Container p_39366_) {
         this.access.execute((level, pos) -> {
             slotChanged(this, level, this.player, this.inputSlot, this.outputSlot);
         });
@@ -101,7 +101,7 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         //https://www.youtube.com/watch?v=340HcHexH60
         Slot fromSlot = getSlot(quickMovedSlotIndex);
         ItemStack fromItem = fromSlot.getItem();
-        if(fromItem.is(NukeRegistry.NUKE_ITEM.get()))return ItemStack.EMPTY;
+        //if(fromItem.is(NukeRegistry.NUKE_ITEM.get()))return ItemStack.EMPTY;
         if(fromItem.getCount()<=0)fromSlot.set(ItemStack.EMPTY);
         if(!fromSlot.hasItem())return ItemStack.EMPTY;
         //player.sendSystemMessage(Component.literal(String.valueOf(quickMovedSlotIndex)));
@@ -128,54 +128,7 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         return AbstractContainerMenu.stillValid(this.access, player, BedrockWorkstationRegistry.BEDROCK_WORKSTATION_BLOCK.get());
     }
 
-    @Override
-    public void fillCraftSlotsStackedContents(StackedContents contents) {
-        this.inputSlot.fillStackedContents(contents);
-    }
-
-    @Override
-    public void clearCraftingContent() {
-        this.inputSlot.clearContent();
-        this.outputSlot.clearContent();
-    }
-
-    @Override
-    public boolean recipeMatches(Recipe<? super CraftingContainer> recipe) {
-        return recipe.matches(this.inputSlot, this.player.level());
-    }
-
-    @Override
-    public int getResultSlotIndex() {
-        return 0;
-    }
-
-    @Override
-    public int getGridWidth() {
-        return 1;
-    }
-
-    @Override
-    public int getGridHeight() {
-        return 1;
-    }
-
-    @Override
-    public int getSize() {
-        return 2;
-    }
-
-    @Override
-    public RecipeBookType getRecipeBookType() {
-        return RecipeBookType.CRAFTING;
-    }
-
-    @Override
-    public boolean shouldMoveToInventory(int i) {
-        return i != this.getResultSlotIndex();
-    }
-
-    public static ItemStack getOutput(ItemStack input) {
-        ItemStack itemstack = ItemStack.EMPTY;
+    public static void applyModifiers(ItemStack itemstack, BedrockWorkstationRecipe.Modifiers modifiers) {
         Enchantment[] armorEnchantmentsArray = {
                 Enchantments.ALL_DAMAGE_PROTECTION,
                 Enchantments.AQUA_AFFINITY,
@@ -211,112 +164,25 @@ public class BedrockWorkstationMenu extends RecipeBookMenu<CraftingContainer> {
         armorEnchantments.addAll(commonEnchantments);
         swordEnchantments.addAll(commonEnchantments);
         pickaxeEnchantments.addAll(commonEnchantments);
-        if(input.is(Blocks.BEDROCK.asItem())){
-            itemstack = Items.BARRIER.getDefaultInstance();
-            itemstack.setCount(input.getCount());
-        }
-        if(input.is(Items.WOODEN_SWORD)){
-            CompoundTag test = new CompoundTag();
-            itemstack = BedrockItemRegistry.BEDROCK_SWORD.get().getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : swordEnchantments)itemstack.enchant(e, 127);
-        }
-        if(input.is(Items.WOODEN_PICKAXE)){
-            CompoundTag test = new CompoundTag();
-            itemstack = BedrockItemRegistry.BEDROCK_PICKAXE.get().getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : pickaxeEnchantments)itemstack.enchant(e, 127);
-        }
-        if(input.is(Items.ENDER_PEARL)){
-            itemstack = BedrockItemRegistry.BEDROCK_ENDER_PEARL.get().getDefaultInstance();
-            itemstack.setCount(input.getCount());
-        }
-        if(input.is(Items.REDSTONE)){
-            itemstack = BedrockItemRegistry.BEDROCK_ACCELERATOR.get().getDefaultInstance();
-        }
-        if(input.is(Blocks.NETHERITE_BLOCK.asItem())){
-            itemstack = BedrockItemRegistry.BEDROCK_COMMAND_LINE.get().getDefaultInstance();
-        }
-        if(input.is(Blocks.NETHERRACK.asItem())){
-            itemstack = BedrockItemRegistry.BEDROCK_MAGNET.get().getDefaultInstance();
-        }
-        if(input.is(Blocks.COBBLESTONE.asItem())){
-            itemstack = DuperRegistry.DUPER_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(NukeRegistry.NUKE_ITEM.get())){
-            itemstack = NukeRegistry.THROWABLE_NUKE_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(NukeRegistry.THROWABLE_NUKE_ITEM.get())){
-            itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(Items.COAL)){
-            itemstack = C4Registry.C4_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(Items.IRON_INGOT)){
-            itemstack = C4Registry.C4_DETONATOR_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(C4Registry.C4_ITEM.get())){
-            itemstack = C4Registry.C4_MACHINE_GUN.get().getDefaultInstance();
-        }
-        if(input.is(Blocks.TNT.asItem())){
-            if(input.getCount()>=8) {
-                itemstack = NukeRegistry.NUKE_ITEM.get().getDefaultInstance();
+        switch (modifiers) {
+            case ARMOR -> {
+                CompoundTag tag = new CompoundTag();
+                tag.putBoolean("Unbreakable", true);
+                itemstack.setTag(tag);
+                for(Enchantment e : armorEnchantments) itemstack.enchant(e, 127);
+            }
+            case SWORD -> {
+                CompoundTag tag = new CompoundTag();
+                tag.putBoolean("Unbreakable", true);
+                itemstack.setTag(tag);
+                for(Enchantment e : swordEnchantments) itemstack.enchant(e, 127);
+            }
+            case PICKAXE -> {
+                CompoundTag tag = new CompoundTag();
+                tag.putBoolean("Unbreakable", true);
+                itemstack.setTag(tag);
+                for(Enchantment e : pickaxeEnchantments) itemstack.enchant(e, 127);
             }
         }
-        if(input.is(Blocks.DIRT.asItem())){
-            itemstack = FallingGrassBlockRegistry.FALLING_GRASS_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(Blocks.GRASS_BLOCK.asItem())){
-            itemstack = ZeroFrictionGrassBlockRegistry.ZERO_FRICTION_GRASS_ITEM.get().getDefaultInstance();
-        }
-        if(input.is(Blocks.STONE.asItem())){
-            itemstack = FakeStoneRegistry.FAKE_STONE_ITEM.get().getDefaultInstance();
-        }
-        /*
-        if(input.is(Items.WOODEN_AXE)){
-            CompoundTag test = new CompoundTag();
-            test.putBoolean("Unbreakable", true);
-            itemstack = Items.NETHERITE_AXE.getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : enchantments)itemstack.enchant(e, 127);
-
-        }
-        if(input.is(Items.WOODEN_SHOVEL)){
-            CompoundTag test = new CompoundTag();
-            test.putBoolean("Unbreakable", true);
-            itemstack = Items.NETHERITE_SHOVEL.getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : enchantments)itemstack.enchant(e, 127);
-
-        }
-        */
-        if(input.is(Items.LEATHER_HELMET)){
-            CompoundTag test = new CompoundTag();
-            test.putBoolean("Unbreakable", true);
-            itemstack = BedrockItemRegistry.BEDROCK_HELMET.get().getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : armorEnchantments)itemstack.enchant(e, 127);
-
-        }if(input.is(Items.LEATHER_CHESTPLATE)){
-            CompoundTag test = new CompoundTag();
-            test.putBoolean("Unbreakable", true);
-            itemstack = Items.NETHERITE_CHESTPLATE.getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : armorEnchantments)itemstack.enchant(e, 127);
-
-        }if(input.is(Items.LEATHER_LEGGINGS)){
-            CompoundTag test = new CompoundTag();
-            test.putBoolean("Unbreakable", true);
-            itemstack = Items.NETHERITE_LEGGINGS.getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : armorEnchantments)itemstack.enchant(e, 127);
-
-        }if(input.is(Items.LEATHER_BOOTS)){
-            CompoundTag test = new CompoundTag();
-            itemstack = BedrockItemRegistry.BEDROCK_BOOTS.get().getDefaultInstance();
-            itemstack.setTag(test);
-            for(Enchantment e : armorEnchantments)itemstack.enchant(e, 127);
-        }
-        return itemstack;
     }
 }

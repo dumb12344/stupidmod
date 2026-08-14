@@ -1,0 +1,11 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:grass_block"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:zero_friction_grass_block"
+  }
+}

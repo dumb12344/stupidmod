@@ -1,0 +1,12 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:leather_chestplate"
+  },
+  "output": {
+    "count": 1,
+    "item": "minecraft:netherite_chestplate"
+  },
+  "modifiers": "armor"
+}

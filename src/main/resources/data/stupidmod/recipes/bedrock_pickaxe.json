@@ -1,0 +1,12 @@
+{
+  "type": "stupidmod:bedrock_workstation",
+  "input": {
+    "count": 1,
+    "item": "minecraft:wooden_pickaxe"
+  },
+  "output": {
+    "count": 1,
+    "item": "stupidmod:bedrock_pickaxe"
+  },
+  "modifiers": "pickaxe"
+}
